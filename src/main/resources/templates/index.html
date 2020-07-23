@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>message</h2>
+<div>
+    <textarea id="message" cols="30" rows="10"></textarea>
+    <button id="button">send message</button>
+</div>
+
+<ul id="list"></ul>
+<script th:inline="javascript">
+    {
+        const uuid = /*[[${uuid}]]*/ "";
+        document.querySelector("#button").addEventListener('click', () => {
+            const message = document.querySelector("#message").value
+            fetch("send/message", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                body: JSON.stringify({
+                    id: uuid,
+                    value: message
+                })
+            })
+                .then(data => {
+                    console.log(data)
+                })
+        });
+
+        const eventList = document.getElementById("list");
+        const evtSource = new EventSource(`push/${uuid}`);
+        evtSource.addEventListener("push", function (e) {
+            const newElement = document.createElement("li");
+            //const obj = JSON.parse(e.data);
+            newElement.innerHTML = e.data
+            eventList.appendChild(newElement);
+        }, false);
+    }
+</script>
+</body>
+</html>
