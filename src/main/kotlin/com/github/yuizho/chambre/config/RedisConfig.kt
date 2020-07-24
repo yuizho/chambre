@@ -1,5 +1,6 @@
 package com.github.yuizho.chambre.config
 
+import com.github.yuizho.chambre.domain.user.User
 import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,20 +14,30 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.data.redis.stream.StreamReceiver
 
 @Configuration
-class ServerPushConfig {
+class RedisConfig {
     @Bean
-    fun reactiveRedisTemplate(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, Message> {
-        val context = RedisSerializationContext
-                // the serializer of key
-                .newSerializationContext<String, Message>(StringRedisSerializer())
-                // the serializer of value
-                .value(Jackson2JsonRedisSerializer(Message::class.java))
-                .build()
-        return ReactiveRedisTemplate(factory, context)
+    fun messageReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, Message> {
+        return createReactiveRedisOperationsByContext(factory)
+    }
+
+    @Bean
+    fun userReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, User> {
+        return createReactiveRedisOperationsByContext(factory)
     }
 
     @Bean
     fun streamReceiver(factory: ReactiveRedisConnectionFactory): StreamReceiver<String, MapRecord<String, String, String>> {
         return StreamReceiver.create(factory)
+    }
+
+    private inline fun <reified T> createReactiveRedisOperationsByContext(factory: ReactiveRedisConnectionFactory):
+            ReactiveRedisOperations<String, T> {
+        val context = RedisSerializationContext
+                // the serializer of key
+                .newSerializationContext<String, T>(StringRedisSerializer())
+                // the serializer of value
+                .value(Jackson2JsonRedisSerializer(T::class.java))
+                .build()
+        return ReactiveRedisTemplate(factory, context)
     }
 }
