@@ -5,26 +5,38 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
+import org.testcontainers.containers.FixedHostPortGenericContainer
+import org.testcontainers.containers.GenericContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import reactor.test.StepVerifier
 import redis.clients.jedis.Jedis
 
+@Testcontainers
 @SpringBootTest
 class ReactiveUserRepositoryRedisTest {
+
+    companion object {
+        const val REDIS_PORT = 26379
+    }
 
     @Autowired
     lateinit var reactiveUserRepositoryRedis: ReactiveUserRepositoryRedis
 
-    val jedis = Jedis("localhost", 6379)
+    @Container
+    val redis: GenericContainer<*> = FixedHostPortGenericContainer<Nothing>("redis:6.0-alpine")
+            .withFixedExposedPort(REDIS_PORT, 6379)
 
     @Test
     fun `fetch user by user_id`() {
         // given
         val expected = User("2", "yuizho")
-        jedis.set(
-                expected.id,
-                String(Jackson2JsonRedisSerializer(User::class.java)
-                        .serialize(expected))
-        )
+        Jedis(redis.getHost(), REDIS_PORT)
+                .set(
+                        expected.id,
+                        String(Jackson2JsonRedisSerializer(User::class.java)
+                                .serialize(expected))
+                )
 
         // when
         val actual = reactiveUserRepositoryRedis.findUserBy(expected.id)
