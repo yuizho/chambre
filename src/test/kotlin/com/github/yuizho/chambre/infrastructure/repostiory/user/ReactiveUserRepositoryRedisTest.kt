@@ -1,6 +1,8 @@
 package com.github.yuizho.chambre.infrastructure.repostiory.user
 
 import com.github.yuizho.chambre.RedisConfig
+import com.github.yuizho.chambre.domain.user.Role
+import com.github.yuizho.chambre.domain.user.Status
 import com.github.yuizho.chambre.domain.user.User
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +25,7 @@ class ReactiveUserRepositoryRedisTest {
     @Test
     fun `fetch user by user_id`() {
         // given
-        val expected = User("2", "yuizho")
+        val expected = User("2", "yuizho", Role.ADMIN, Status.AVAILABLE)
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .set(
                         expected.id,
@@ -43,7 +45,7 @@ class ReactiveUserRepositoryRedisTest {
     @Test
     fun `save user data`() {
         // given
-        val expected = User("1", "yuizho")
+        val expected = User("1", "yuizho", Role.NORMAL, Status.NEEDS_APPROVAL)
 
         // when
         val actual = reactiveUserRepositoryRedis.save(expected)
