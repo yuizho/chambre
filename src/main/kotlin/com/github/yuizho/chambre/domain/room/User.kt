@@ -1,4 +1,4 @@
-package com.github.yuizho.chambre.domain.user
+package com.github.yuizho.chambre.domain.room
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -9,6 +9,7 @@ data class User @JsonCreator constructor(
         val id: String,
         @param:JsonProperty("name")
         val name: String,
+        // TODO: should be implemented by inherit?
         @param:JsonProperty("role")
         val role: Role,
         @param:JsonProperty("status")

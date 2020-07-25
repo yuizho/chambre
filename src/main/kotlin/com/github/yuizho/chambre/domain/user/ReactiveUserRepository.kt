@@ -1,5 +1,6 @@
 package com.github.yuizho.chambre.domain.user
 
+import com.github.yuizho.chambre.domain.room.User
 import reactor.core.publisher.Mono
 
 interface ReactiveUserRepository {

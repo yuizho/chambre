@@ -1,7 +1,8 @@
-package com.github.yuizho.chambre.infrastructure.repostiory.user
+package com.github.yuizho.chambre.infrastructure.repostiory.room
 
 import com.github.yuizho.chambre.RedisConfig
 import com.github.yuizho.chambre.domain.room.Role
+import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.domain.room.Status
 import com.github.yuizho.chambre.domain.room.User
 import org.junit.jupiter.api.Test
@@ -15,26 +16,34 @@ import redis.clients.jedis.Jedis
 
 @Testcontainers
 @SpringBootTest
-class ReactiveUserRepositoryRedisTest {
+class ReactiveRoomRepositoryRedisTest {
     @Autowired
-    lateinit var reactiveUserRepositoryRedis: ReactiveUserRepositoryRedis
+    lateinit var reactiveRoomRepositoryRedis: ReactiveRoomRepositoryRedis
 
     @Container
     val redis = RedisConfig.redis
 
     @Test
-    fun `fetch user by user_id`() {
+    fun `fetch room by room_id`() {
         // given
-        val expected = User("2", "yuizho", Role.ADMIN, Status.AVAILABLE)
+        val expected = Room(
+                "1",
+                Room.Status.OPEN,
+                listOf(
+                        User("1", "foo", Role.ADMIN, Status.AVAILABLE),
+                        User("2", "bar", Role.NORMAL, Status.AVAILABLE)
+                )
+        )
+
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .set(
                         expected.id,
-                        String(Jackson2JsonRedisSerializer(User::class.java)
+                        String(Jackson2JsonRedisSerializer(Room::class.java)
                                 .serialize(expected))
                 )
 
         // when
-        val actual = reactiveUserRepositoryRedis.findUserBy(expected.id)
+        val actual = reactiveRoomRepositoryRedis.findUserBy(expected.id)
 
         // then
         StepVerifier.create(actual)
@@ -43,12 +52,19 @@ class ReactiveUserRepositoryRedisTest {
     }
 
     @Test
-    fun `save user data`() {
+    fun `save room data`() {
         // given
-        val expected = User("1", "yuizho", Role.NORMAL, Status.NEEDS_APPROVAL)
+        val expected = Room(
+                "1",
+                Room.Status.OPEN,
+                listOf(
+                        User("1", "foo", Role.ADMIN, Status.AVAILABLE),
+                        User("2", "bar", Role.NORMAL, Status.AVAILABLE)
+                )
+        )
 
         // when
-        val actual = reactiveUserRepositoryRedis.save(expected)
+        val actual = reactiveRoomRepositoryRedis.save(expected)
 
         // then
         StepVerifier.create(actual)
