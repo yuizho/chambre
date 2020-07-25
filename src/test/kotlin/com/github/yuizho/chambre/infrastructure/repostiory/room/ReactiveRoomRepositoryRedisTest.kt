@@ -43,7 +43,7 @@ class ReactiveRoomRepositoryRedisTest {
                 )
 
         // when
-        val actual = reactiveRoomRepositoryRedis.findUserBy(expected.id)
+        val actual = reactiveRoomRepositoryRedis.findRoomBy(expected.id)
 
         // then
         StepVerifier.create(actual)

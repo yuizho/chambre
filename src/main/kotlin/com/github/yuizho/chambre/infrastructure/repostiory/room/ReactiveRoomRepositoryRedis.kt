@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono
 class ReactiveRoomRepositoryRedis(
         private val redisOperations: ReactiveRedisOperations<String, Room>
 ) : ReactiveRoomRepository {
-    override fun findUserBy(id: String): Mono<Room> {
+    override fun findRoomBy(id: String): Mono<Room> {
         return redisOperations
                 .opsForValue()
                 .get(id)
