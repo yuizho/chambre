@@ -1,10 +1,7 @@
 package com.github.yuizho.chambre.infrastructure.repostiory.auth
 
 import com.github.yuizho.chambre.RedisConfig
-import com.github.yuizho.chambre.domain.room.Role
-import com.github.yuizho.chambre.domain.room.Room
-import com.github.yuizho.chambre.domain.room.Status
-import com.github.yuizho.chambre.domain.room.User
+import com.github.yuizho.chambre.domain.auth.AuthContainer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,32 +15,29 @@ import redis.clients.jedis.Jedis
 @SpringBootTest
 class ReactiveAuthContainerRepositoryRedisTest {
     @Autowired
-    lateinit var reactiveRoomRepositoryRedis: ReactiveRoomRepositoryRedis
+    lateinit var reactiveAuthContainerRepositoryRedis: ReactiveAuthContainerRepositoryRedis
 
     @Container
     val redis = RedisConfig.redis
 
     @Test
-    fun `fetch room by room_id`() {
+    fun `fetch auth_container by token`() {
         // given
-        val expected = Room(
+        val expected = AuthContainer(
+                "9999999",
                 "1",
-                Room.Status.OPEN,
-                listOf(
-                        User("1", "foo", Role.ADMIN, Status.AVAILABLE),
-                        User("2", "bar", Role.NORMAL, Status.AVAILABLE)
-                )
+                "2"
         )
 
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .set(
-                        expected.id,
-                        String(Jackson2JsonRedisSerializer(Room::class.java)
+                        expected.token,
+                        String(Jackson2JsonRedisSerializer(AuthContainer::class.java)
                                 .serialize(expected))
                 )
 
         // when
-        val actual = reactiveRoomRepositoryRedis.findRoomBy(expected.id)
+        val actual = reactiveAuthContainerRepositoryRedis.findAuthContainerBy(expected.token)
 
         // then
         StepVerifier.create(actual)
@@ -52,19 +46,16 @@ class ReactiveAuthContainerRepositoryRedisTest {
     }
 
     @Test
-    fun `save room data`() {
+    fun `save auth_container data`() {
         // given
-        val expected = Room(
+        val expected = AuthContainer(
+                "1234567890",
                 "1",
-                Room.Status.OPEN,
-                listOf(
-                        User("1", "foo", Role.ADMIN, Status.AVAILABLE),
-                        User("2", "bar", Role.NORMAL, Status.AVAILABLE)
-                )
+                "2"
         )
 
         // when
-        val actual = reactiveRoomRepositoryRedis.save(expected)
+        val actual = reactiveAuthContainerRepositoryRedis.save(expected)
 
         // then
         StepVerifier.create(actual)
