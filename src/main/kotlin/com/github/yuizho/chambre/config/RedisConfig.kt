@@ -1,5 +1,6 @@
 package com.github.yuizho.chambre.config
 
+import com.github.yuizho.chambre.domain.auth.AuthContainer
 import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.context.annotation.Bean
@@ -22,6 +23,11 @@ class RedisConfig {
 
     @Bean
     fun roomReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, Room> {
+        return createReactiveRedisOperationsByContext(factory)
+    }
+
+    @Bean
+    fun authContainerReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, AuthContainer> {
         return createReactiveRedisOperationsByContext(factory)
     }
 
