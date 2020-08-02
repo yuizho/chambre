@@ -7,6 +7,11 @@
 <body>
 <h2>message</h2>
 <div>
+    <label for="token-text">Auth Token: </label>
+    <input type="text" id="token-text">
+    <button id="auth-button">auth</button>
+    <div th:text="${context}"></div>
+    <br>
     <textarea id="message" cols="30" rows="10"></textarea>
     <button id="button">send message</button>
 </div>
@@ -14,11 +19,25 @@
 <ul id="list"></ul>
 <script th:inline="javascript">
     {
+        document.querySelector("#auth-button").addEventListener('click', () => {
+            fetch("/auth", {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;"
+                },
+                body: "authToken=" + document.querySelector("#token-text").value
+            }).then(data => {
+                console.log(data)
+            })
+        })
+
         const uuid = /*[[${uuid}]]*/ "";
         document.querySelector("#button").addEventListener('click', () => {
             const message = document.querySelector("#message").value
             fetch("event/post", {
                 method: "POST",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
                 },
