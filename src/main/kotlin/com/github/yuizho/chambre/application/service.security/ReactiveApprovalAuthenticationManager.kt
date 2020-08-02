@@ -22,6 +22,10 @@ class ReactiveApprovalAuthenticationManager(
             if (it.status != Status.AVAILABLE) {
                 throw DisabledException("the user status is not available. Status: ${it.status}")
             }
-        }.map { UserAuthenticationToken(it) }
+        }.map {
+            UserAuthenticationToken(it).also { uat ->
+                uat.isAuthenticated = true
+            }
+        }
     }
 }

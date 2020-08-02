@@ -29,19 +29,11 @@ class SecurityConfig {
     ): SecurityWebFilterChain {
         // https://github.com/spring-projects/spring-security/blob/master/config/src/main/java/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.java#L211
         return http
-                // FIXME: after authentication, authenticated entpoint still returns 403...
                 // TODO: need csrf filter
                 .csrf().disable()
                 .httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
-
-                .authorizeExchange()
-                .pathMatchers("/room").permitAll()
-                .pathMatchers("/auth").permitAll()
-                .pathMatchers("/notify/**").permitAll()
-                .anyExchange().hasAnyRole()
-                .and()
                 .addFilterAt(
                         authenticationWebFilter(
                                 authenticationManager,
@@ -49,6 +41,13 @@ class SecurityConfig {
                         ),
                         SecurityWebFiltersOrder.AUTHENTICATION
                 )
+                // configure endpoints
+                .authorizeExchange()
+                .pathMatchers("/room").permitAll()
+                .pathMatchers("/auth").permitAll()
+                .pathMatchers("/notify/**").permitAll()
+                .anyExchange().authenticated()
+                .and()
                 .build()
     }
 
