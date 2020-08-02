@@ -29,11 +29,10 @@ class SecurityConfig {
     ): SecurityWebFilterChain {
         // https://github.com/spring-projects/spring-security/blob/master/config/src/main/java/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.java#L211
         return http
-                // TODO: need csrf filter
-                .csrf().disable()
                 .httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
+                .csrf().and()
                 .addFilterAt(
                         authenticationWebFilter(
                                 authenticationManager,
