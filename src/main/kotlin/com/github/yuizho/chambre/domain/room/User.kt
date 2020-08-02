@@ -3,6 +3,7 @@ package com.github.yuizho.chambre.domain.room
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
+import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.GrantedAuthority
 
 data class User @JsonCreator constructor(
@@ -34,11 +35,16 @@ enum class Role(
 
 enum class Status(
         @field:JsonValue
-        val value: Int
+        val value: Int,
+        val validate: () -> Unit
 ) {
-    NEEDS_APPROVAL(0),
-    AVAILABLE(1),
-    UNAVAILABLE(2);
+    NEEDS_APPROVAL(0, {
+        throw DisabledException("the user status is not available. Status: NEEDS_APPROVAL")
+    }),
+    AVAILABLE(1, { }),
+    UNAVAILABLE(2, {
+        throw DisabledException("the user status is not available. Status: UNAVAILABLE")
+    });
 
     @JsonCreator
     fun of(value: Int): Status {
