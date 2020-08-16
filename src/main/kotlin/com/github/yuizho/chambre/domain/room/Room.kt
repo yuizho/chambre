@@ -10,9 +10,8 @@ data class Room @JsonCreator constructor(
         @param:JsonProperty("status")
         val status: Status,
         @param:JsonProperty("users")
-        val users: List<User> = emptyList()
+        val users: MutableSet<User> = mutableSetOf()
 ) {
-    // TODO: how to fetch user objects???
 
     enum class Status(
             @field:JsonValue

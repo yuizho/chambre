@@ -45,7 +45,7 @@ class SecurityConfig {
                 .pathMatchers("/room").permitAll()
                 .pathMatchers("/auth").permitAll()
                 .pathMatchers("/notify/**").permitAll()
-                .anyExchange().authenticated()
+                .pathMatchers("/event/entry").permitAll()
                 .and()
                 .build()
     }
