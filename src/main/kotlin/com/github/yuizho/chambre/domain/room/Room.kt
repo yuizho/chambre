@@ -26,4 +26,6 @@ data class Room @JsonCreator constructor(
                     ?: throw IllegalArgumentException("unexpected value is passed to get User.Status.")
         }
     }
+
+    fun adminUser(): User = users.first { it.role == Role.ADMIN }
 }
