@@ -5,15 +5,21 @@
     <title>Title</title>
 </head>
 <body>
-<h2>message</h2>
+<h2>auth</h2>
 <div>
     <label for="token-text">Auth Token: </label>
-    <input type="text" id="token-text">
+    <input type="text" id="token-text" value="paticipants:hogehoge">
     <button id="auth-button">auth</button>
     <div th:text="${context}"></div>
-    <br>
-    <textarea id="message" cols="30" rows="10"></textarea>
-    <button id="button">send message</button>
+</div>
+
+<h2>entry</h2>
+<div>
+    <label for="room-id-text">roomId: </label>
+    <input type="text" id="room-id-text" value="room:1">
+    <label for="user-name-text">userName: </label>
+    <input type="text" id="user-name-text" value="userA">
+    <button id="entry-button">entry</button>
 </div>
 
 <ul id="list"></ul>
@@ -32,13 +38,15 @@
                 body: "authToken=" + document.querySelector("#token-text").value
             }).then(data => {
                 console.log(data)
+                location.reload()
             })
         })
 
         const uuid = /*[[${uuid}]]*/ "";
-        document.querySelector("#button").addEventListener('click', () => {
-            const message = document.querySelector("#message").value
-            fetch("event/post", {
+        document.querySelector("#entry-button").addEventListener('click', () => {
+            const userName = document.querySelector("#user-name-text").value
+            const roomId = document.querySelector("#room-id-text").value
+            fetch("event/entry", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
@@ -46,8 +54,8 @@
                     [csrfHeaderName]: csrfToken
                 },
                 body: JSON.stringify({
-                    id: uuid,
-                    value: message
+                    roomId: roomId,
+                    userName: userName
                 })
             })
                 .then(data => {
@@ -56,8 +64,8 @@
         });
 
         const eventList = document.getElementById("list");
-        const evtSource = new EventSource(`notify/${uuid}`);
-        evtSource.addEventListener("notify", function (e) {
+        const evtSource = new EventSource(`notify/room:1`);
+        evtSource.addEventListener("ENTRY", function (e) {
             const newElement = document.createElement("li");
             //const obj = JSON.parse(e.data);
             newElement.innerHTML = e.data

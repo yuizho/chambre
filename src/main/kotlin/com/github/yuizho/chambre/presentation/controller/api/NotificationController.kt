@@ -27,9 +27,12 @@ class NotificationController(
     @GetMapping("/{roomId}")
     fun notify(@PathVariable roomId: String): Flux<ServerSentEvent<String>> {
         return ReactiveSecurityContextHolder.getContext()
-                .map { it.authentication.principal as User }
+                .map {
+                    it.authentication.principal as User
+                }
                 .flatMapMany { user ->
-                    streamReceiver.receive(StreamOffset.latest(roomId))
+                    // TODO: shold be fromStart?
+                    streamReceiver.receive(StreamOffset.latest("event:$roomId"))
                             .map {
                                 // TODO: add error handling
                                 Message(
@@ -41,6 +44,7 @@ class NotificationController(
                                         it.value["payload"]!!
                                 )
                             }
+                            .log()
                             .filter { it.to.contains(user) }
                             .map { message ->
                                 ServerSentEvent.builder(
