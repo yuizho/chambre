@@ -24,20 +24,6 @@ class EventController(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val objectMapper: ObjectMapper
 ) {
-    companion object {
-        const val ROOM_ID = "CHAMBRE"
-    }
-
-    // TODO: demo end point
-    @PostMapping("/post")
-    fun postMessage(@RequestBody message: Message): Mono<String> {
-        // ココ続けてreturnしないとブロックされてしまう
-        return reactiveRedisOperations.opsForStream<String, Message>()
-                .add(MapRecord.create(ROOM_ID, mapOf("to" to message.to, "payload" to message.payload)))
-                .log("finished to send message")
-                .map { "Ok" }
-    }
-
     // TODO: validation
     @PostMapping("/entry")
     fun entry(@RequestBody param: EntryParameter): Mono<String> {
