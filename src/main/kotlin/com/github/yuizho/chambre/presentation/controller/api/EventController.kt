@@ -5,6 +5,8 @@ import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
 import com.github.yuizho.chambre.domain.room.Role
 import com.github.yuizho.chambre.domain.room.Status
 import com.github.yuizho.chambre.domain.room.User
+import com.github.yuizho.chambre.exception.BusinessException
+import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
 import com.github.yuizho.chambre.presentation.dto.EventType
 import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.data.redis.connection.stream.MapRecord
@@ -36,6 +38,7 @@ class EventController(
                 .map { "Ok" }
     }
 
+    // TODO: validation
     @PostMapping("/entry")
     fun entry(@RequestBody param: EntryParameter): Mono<String> {
         // TODO: fingar print check (to prevent deprecate entry)
@@ -47,9 +50,16 @@ class EventController(
                 Role.NORMAL,
                 Status.NEEDS_APPROVAL
         )
-        // TODO: room null check
-        // TODO: check the room already has same user name?
         return room
+                .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))
+                .doOnNext { room ->
+                    if (newUser in room.users) {
+                        throw BusinessException("you have already joined this room.")
+                    }
+                    if (room.users.any { it.name == newUser.name }) {
+                        throw BusinessException("same name user have already joined this room.")
+                    }
+                }
                 .flatMap { room ->
                     // add the user to room
                     room.users.add(newUser)
@@ -69,8 +79,3 @@ class EventController(
                 .then(Mono.just("ok"))
     }
 }
-
-data class EntryParameter(
-        val roomId: String,
-        val userName: String
-)
