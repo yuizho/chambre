@@ -24,14 +24,14 @@ class ReactiveParticipantRepositoryRedisTest {
     fun `fetch auth_container by token`() {
         // given
         val expected = Participant(
-                "9999999",
+                Participant.Id.from("9999999"),
                 "1",
                 "2"
         )
 
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .set(
-                        expected.token,
+                        expected.token.getIdIdWithSchemaPrefix(),
                         String(Jackson2JsonRedisSerializer(Participant::class.java)
                                 .serialize(expected))
                 )
@@ -49,7 +49,7 @@ class ReactiveParticipantRepositoryRedisTest {
     fun `save auth_container data`() {
         // given
         val expected = Participant(
-                "1234567890",
+                Participant.Id.fromIdWithSchemaPrefix("participant:1234567890"),
                 "1",
                 "2"
         )

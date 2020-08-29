@@ -10,15 +10,15 @@ import reactor.core.publisher.Mono
 class ReactiveParticipantRepositoryRedis(
         private val redisOperations: ReactiveRedisOperations<String, Participant>
 ) : ReactiveParticipantRepository {
-    override fun findAuthContainerBy(token: String): Mono<Participant> {
+    override fun findAuthContainerBy(id: Participant.Id): Mono<Participant> {
         return redisOperations
                 .opsForValue()
-                .get(token)
+                .get(id.getIdIdWithSchemaPrefix())
     }
 
     override fun save(participant: Participant): Mono<Boolean> {
         return redisOperations
                 .opsForValue()
-                .set(participant.token, participant)
+                .set(participant.token.getIdIdWithSchemaPrefix(), participant)
     }
 }

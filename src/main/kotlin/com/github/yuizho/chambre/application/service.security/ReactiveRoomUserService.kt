@@ -1,5 +1,6 @@
 package com.github.yuizho.chambre.application.service.security
 
+import com.github.yuizho.chambre.domain.auth.Participant
 import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
 import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
 import com.github.yuizho.chambre.domain.room.Room
@@ -15,7 +16,7 @@ class ReactiveRoomUserServiceImpl(
         private val reactiveRoomRepository: ReactiveRoomRepository
 ) : ReactiveRoomUserService {
     override fun retrieveUser(token: String): Mono<User> {
-        return reactiveParticipantRepository.findAuthContainerBy(token)
+        return reactiveParticipantRepository.findAuthContainerBy(Participant.Id.from(token))
                 .flatMap { ac ->
                     reactiveRoomRepository.findRoomBy(Room.Id.fromIdWithSchemaPrefix(ac.roomId))
                             .map { r -> Pair(ac.userId, r) }
