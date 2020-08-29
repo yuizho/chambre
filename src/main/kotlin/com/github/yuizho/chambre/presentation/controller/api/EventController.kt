@@ -1,10 +1,7 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
-import com.github.yuizho.chambre.domain.room.Role
-import com.github.yuizho.chambre.domain.room.Status
-import com.github.yuizho.chambre.domain.room.User
+import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
 import com.github.yuizho.chambre.presentation.dto.EventType
@@ -28,7 +25,7 @@ class EventController(
     @PostMapping("/entry")
     fun entry(@RequestBody param: EntryParameter): Mono<String> {
         // TODO: fingar print check (to prevent deprecate entry)
-        val room = reactiveRoomRepository.findRoomBy(param.roomId)
+        val room = reactiveRoomRepository.findRoomBy(Room.Id.from(param.roomId))
         val newUser = User(
                 // TODO: it should be primary (by UUID) or fingar print
                 "4",

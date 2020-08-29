@@ -27,7 +27,7 @@ class ReactiveRoomRepositoryRedisTest {
     fun `fetch room by room_id`() {
         // given
         val expected = Room(
-                "1",
+                Room.Id.from("1"),
                 Room.Status.OPEN,
                 mutableSetOf(
                         User("1", "foo", Role.ADMIN, Status.AVAILABLE),
@@ -37,7 +37,7 @@ class ReactiveRoomRepositoryRedisTest {
 
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .set(
-                        expected.id,
+                        expected.id.getIdIdWithSchemaPrefix(),
                         String(Jackson2JsonRedisSerializer(Room::class.java)
                                 .serialize(expected))
                 )
@@ -55,7 +55,7 @@ class ReactiveRoomRepositoryRedisTest {
     fun `save room data`() {
         // given
         val expected = Room(
-                "1",
+                Room.Id.fromIdWithSchemaPrefix("room:1"),
                 Room.Status.OPEN,
                 mutableSetOf(
                         User("1", "foo", Role.ADMIN, Status.AVAILABLE),

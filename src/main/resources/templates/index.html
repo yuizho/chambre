@@ -16,7 +16,7 @@
 <h2>entry</h2>
 <div>
     <label for="room-id-text">roomId: </label>
-    <input type="text" id="room-id-text" value="room:1">
+    <input type="text" id="room-id-text" value="1">
     <label for="user-name-text">userName: </label>
     <input type="text" id="user-name-text" value="userA">
     <button id="entry-button">entry</button>
@@ -64,7 +64,7 @@
         });
 
         const eventList = document.getElementById("list");
-        const evtSource = new EventSource(`notify/room:1`);
+        const evtSource = new EventSource(`notify/1`);
         evtSource.addEventListener("ENTRY", function (e) {
             const newElement = document.createElement("li");
             //const obj = JSON.parse(e.data);
