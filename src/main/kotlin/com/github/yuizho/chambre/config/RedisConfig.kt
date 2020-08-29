@@ -1,6 +1,6 @@
 package com.github.yuizho.chambre.config
 
-import com.github.yuizho.chambre.domain.auth.AuthContainer
+import com.github.yuizho.chambre.domain.auth.Participant
 import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.context.annotation.Bean
@@ -27,7 +27,7 @@ class RedisConfig {
     }
 
     @Bean
-    fun authContainerReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, AuthContainer> {
+    fun participantReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, Participant> {
         return createReactiveRedisOperationsByContext(factory)
     }
 

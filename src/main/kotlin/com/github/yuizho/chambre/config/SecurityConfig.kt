@@ -1,7 +1,7 @@
 package com.github.yuizho.chambre.config
 
 import com.github.yuizho.chambre.application.service.security.*
-import com.github.yuizho.chambre.domain.auth.ReactiveAuthContainerRepository
+import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
 import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.context.annotation.Bean
@@ -59,11 +59,11 @@ class SecurityConfig {
 
     @Bean
     fun reactiveRoomUserService(
-            reactiveAuthContainerRepository: ReactiveAuthContainerRepository,
+            reactiveParticipantRepository: ReactiveParticipantRepository,
             reactiveRoomRepository: ReactiveRoomRepository
     ): ReactiveRoomUserService {
         return ReactiveRoomUserServiceImpl(
-                reactiveAuthContainerRepository,
+                reactiveParticipantRepository,
                 reactiveRoomRepository
         )
     }

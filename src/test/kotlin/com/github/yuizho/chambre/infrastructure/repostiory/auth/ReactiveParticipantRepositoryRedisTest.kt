@@ -1,7 +1,7 @@
 package com.github.yuizho.chambre.infrastructure.repostiory.auth
 
 import com.github.yuizho.chambre.RedisConfig
-import com.github.yuizho.chambre.domain.auth.AuthContainer
+import com.github.yuizho.chambre.domain.auth.Participant
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,9 +13,9 @@ import redis.clients.jedis.Jedis
 
 @Testcontainers
 @SpringBootTest
-class ReactiveAuthContainerRepositoryRedisTest {
+class ReactiveParticipantRepositoryRedisTest {
     @Autowired
-    lateinit var reactiveAuthContainerRepositoryRedis: ReactiveAuthContainerRepositoryRedis
+    lateinit var reactiveParticipantRepositoryRedis: ReactiveParticipantRepositoryRedis
 
     @Container
     val redis = RedisConfig.redis
@@ -23,7 +23,7 @@ class ReactiveAuthContainerRepositoryRedisTest {
     @Test
     fun `fetch auth_container by token`() {
         // given
-        val expected = AuthContainer(
+        val expected = Participant(
                 "9999999",
                 "1",
                 "2"
@@ -32,12 +32,12 @@ class ReactiveAuthContainerRepositoryRedisTest {
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .set(
                         expected.token,
-                        String(Jackson2JsonRedisSerializer(AuthContainer::class.java)
+                        String(Jackson2JsonRedisSerializer(Participant::class.java)
                                 .serialize(expected))
                 )
 
         // when
-        val actual = reactiveAuthContainerRepositoryRedis.findAuthContainerBy(expected.token)
+        val actual = reactiveParticipantRepositoryRedis.findAuthContainerBy(expected.token)
 
         // then
         StepVerifier.create(actual)
@@ -48,14 +48,14 @@ class ReactiveAuthContainerRepositoryRedisTest {
     @Test
     fun `save auth_container data`() {
         // given
-        val expected = AuthContainer(
+        val expected = Participant(
                 "1234567890",
                 "1",
                 "2"
         )
 
         // when
-        val actual = reactiveAuthContainerRepositoryRedis.save(expected)
+        val actual = reactiveParticipantRepositoryRedis.save(expected)
 
         // then
         StepVerifier.create(actual)
