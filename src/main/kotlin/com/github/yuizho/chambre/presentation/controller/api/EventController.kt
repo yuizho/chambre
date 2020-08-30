@@ -29,18 +29,17 @@ class EventController(
 ) {
     @PostMapping("/entry")
     fun entry(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
-        // TODO: fingar print check (to prevent deprecate entry)
         val roomId = Room.Id.from(param.roomId)
         val room = reactiveRoomRepository.findRoomBy(roomId)
         val newUser = UnapprovedUser(
-                // TODO: it should be primary (by UUID) or fingar print
-                "4",
+                param.userId,
                 param.userName
         )
+        // TODO: should implement password check?
         return room
                 .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))
                 .flatMap { room ->
-                    reactiveUnapprovedUserRepository.contains(roomId, "4")
+                    reactiveUnapprovedUserRepository.contains(roomId, param.userId)
                             .map { joined -> Pair<Room, Boolean>(room, joined) }
                 }
                 .doOnNext { pair ->
