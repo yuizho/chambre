@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
+import com.github.yuizho.chambre.presentation.controller.api.dto.EntryResponse
 import com.github.yuizho.chambre.presentation.dto.EventType
 import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.data.redis.connection.stream.MapRecord
@@ -24,7 +25,7 @@ class EventController(
 ) {
     // TODO: validation
     @PostMapping("/entry")
-    fun entry(@RequestBody @Valid param: EntryParameter): Mono<String> {
+    fun entry(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
         // TODO: fingar print check (to prevent deprecate entry)
         val room = reactiveRoomRepository.findRoomBy(Room.Id.from(param.roomId))
         val newUser = User(
@@ -60,6 +61,6 @@ class EventController(
                                     )
                             ))
                 }
-                .then(Mono.just("ok"))
+                .then(Mono.just(EntryResponse()))
     }
 }

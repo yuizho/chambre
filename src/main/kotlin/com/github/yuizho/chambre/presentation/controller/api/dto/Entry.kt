@@ -11,3 +11,5 @@ data class EntryParameter(
         @field:Size(min = 1, max = 20)
         val userName: String
 )
+
+class EntryResponse
