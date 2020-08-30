@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import javax.validation.Valid
 
 @RequestMapping("/event")
 @RestController
@@ -23,7 +24,7 @@ class EventController(
 ) {
     // TODO: validation
     @PostMapping("/entry")
-    fun entry(@RequestBody param: EntryParameter): Mono<String> {
+    fun entry(@RequestBody @Valid param: EntryParameter): Mono<String> {
         // TODO: fingar print check (to prevent deprecate entry)
         val room = reactiveRoomRepository.findRoomBy(Room.Id.from(param.roomId))
         val newUser = User(
