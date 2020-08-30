@@ -1,8 +1,6 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.yuizho.chambre.domain.room.ReactiveEventStreamRepository
-import com.github.yuizho.chambre.domain.room.Room
+import com.github.yuizho.chambre.application.service.room.NotificationService
 import com.github.yuizho.chambre.domain.room.User
 import org.springframework.http.codec.ServerSentEvent
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
@@ -15,8 +13,7 @@ import reactor.core.publisher.Flux
 @RequestMapping("/notify")
 @RestController
 class NotificationController(
-        private val reactiveEventStreamRepository: ReactiveEventStreamRepository,
-        private val objectMapper: ObjectMapper
+        private val notificationService: NotificationService
 ) {
     // TODO: add the notification for entry user
 
@@ -27,13 +24,12 @@ class NotificationController(
                     it.authentication.principal as User
                 }
                 .flatMapMany { user ->
-                    reactiveEventStreamRepository.receive(Room.Id.from(roomId))
-                            .log()
-                            .filter { it.to.contains(user) }
+                    notificationService.notify(roomId, user)
                             .map { message ->
-                                ServerSentEvent.builder(
-                                        objectMapper.writeValueAsString(message.getPayloadObject())
-                                ).event(message.eventType.name).build()
+                                ServerSentEvent
+                                        .builder(message.payload)
+                                        .event(message.eventType.name)
+                                        .build()
                             }
                 }
 
