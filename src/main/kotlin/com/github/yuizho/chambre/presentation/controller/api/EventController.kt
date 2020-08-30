@@ -23,7 +23,6 @@ class EventController(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val objectMapper: ObjectMapper
 ) {
-    // TODO: validation
     @PostMapping("/entry")
     fun entry(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
         // TODO: fingar print check (to prevent deprecate entry)
