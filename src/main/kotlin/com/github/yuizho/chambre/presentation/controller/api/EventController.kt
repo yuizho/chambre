@@ -1,17 +1,12 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
-import com.github.yuizho.chambre.domain.room.ReactiveUnapprovedUserRepository
-import com.github.yuizho.chambre.domain.room.Room
-import com.github.yuizho.chambre.domain.room.UnapprovedUser
+import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryResponse
 import com.github.yuizho.chambre.presentation.dto.EventType
 import com.github.yuizho.chambre.presentation.dto.Message
-import org.springframework.data.redis.connection.stream.MapRecord
-import org.springframework.data.redis.core.ReactiveRedisOperations
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,9 +17,9 @@ import javax.validation.Valid
 @RequestMapping("/event")
 @RestController
 class EventController(
-        private val reactiveRedisOperations: ReactiveRedisOperations<String, Message>,
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
+        private val reactiveEventStreamRepository: ReactiveEventStreamRepository,
         private val objectMapper: ObjectMapper
 ) {
     @PostMapping("/entry")
@@ -53,15 +48,15 @@ class EventController(
                             .map { pair.first }
                 }
                 .flatMap { room ->
-                    reactiveRedisOperations.opsForStream<String, Message>()
-                            .add(MapRecord.create(
-                                    "event:${param.roomId}",
-                                    mapOf(
-                                            "to" to objectMapper.writeValueAsString(setOf(room.adminUser())),
-                                            "eventType" to EventType.ENTRY,
-                                            "payload" to objectMapper.writeValueAsString(newUser)
-                                    )
-                            ))
+                    reactiveEventStreamRepository.push(
+                            roomId,
+                            Message(
+                                    setOf(room.adminUser()),
+                                    EventType.ENTRY,
+                                    // TODO: want to convert it in Repository
+                                    objectMapper.writeValueAsString(newUser)
+                            )
+                    )
                 }
                 .then(Mono.just(EntryResponse()))
     }
