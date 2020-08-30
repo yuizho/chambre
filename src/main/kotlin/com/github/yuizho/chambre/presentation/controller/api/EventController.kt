@@ -1,7 +1,10 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.yuizho.chambre.domain.room.*
+import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
+import com.github.yuizho.chambre.domain.room.ReactiveUnapprovedUserRepository
+import com.github.yuizho.chambre.domain.room.Room
+import com.github.yuizho.chambre.domain.room.UnapprovedUser
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryResponse
@@ -21,33 +24,34 @@ import javax.validation.Valid
 class EventController(
         private val reactiveRedisOperations: ReactiveRedisOperations<String, Message>,
         private val reactiveRoomRepository: ReactiveRoomRepository,
+        private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
         private val objectMapper: ObjectMapper
 ) {
     @PostMapping("/entry")
     fun entry(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
         // TODO: fingar print check (to prevent deprecate entry)
-        val room = reactiveRoomRepository.findRoomBy(Room.Id.from(param.roomId))
-        val newUser = User(
+        val roomId = Room.Id.from(param.roomId)
+        val room = reactiveRoomRepository.findRoomBy(roomId)
+        val newUser = UnapprovedUser(
                 // TODO: it should be primary (by UUID) or fingar print
                 "4",
-                param.userName,
-                Role.NORMAL,
-                Status.NEEDS_APPROVAL
+                param.userName
         )
         return room
                 .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))
-                .doOnNext { room ->
-                    if (newUser in room.users) {
+                .flatMap { room ->
+                    reactiveUnapprovedUserRepository.contains(roomId, "4")
+                            .map { joined -> Pair<Room, Boolean>(room, joined) }
+                }
+                .doOnNext { pair ->
+                    if (pair.second) {
                         throw BusinessException("you have already joined this room.")
                     }
-                    if (room.users.any { it.name == newUser.name }) {
-                        throw BusinessException("same name user have already joined this room.")
-                    }
+                    // TODO: should check same name user?
                 }
-                .flatMap { room ->
-                    // add the user to room
-                    room.users.add(newUser)
-                    reactiveRoomRepository.save(room).map { room }
+                .flatMap { pair ->
+                    reactiveUnapprovedUserRepository.put(roomId, newUser)
+                            .map { pair.first }
                 }
                 .flatMap { room ->
                     reactiveRedisOperations.opsForStream<String, Message>()

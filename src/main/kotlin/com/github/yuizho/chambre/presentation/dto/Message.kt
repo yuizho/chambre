@@ -1,6 +1,7 @@
 package com.github.yuizho.chambre.presentation.dto
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.yuizho.chambre.domain.room.UnapprovedUser
 import com.github.yuizho.chambre.domain.room.User
 
 data class Message(
@@ -17,5 +18,5 @@ data class Message(
 enum class EventType(
         val payloadClass: Class<*>
 ) {
-    ENTRY(User::class.java)
+    ENTRY(UnapprovedUser::class.java)
 }
