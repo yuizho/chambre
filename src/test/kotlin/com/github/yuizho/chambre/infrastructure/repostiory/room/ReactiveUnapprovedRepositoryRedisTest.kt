@@ -23,7 +23,7 @@ class ReactiveUnapprovedRepositoryRedisTest {
     val redis = RedisConfig.redis
 
     @Test
-    fun `fetch unapprovedUser by room_id, user_id`() {
+    fun `fetch unapprovedUser`() {
         // given
         val expected = UnapprovedUser("1", "userA")
         val roomId = Room.Id.from("1")
@@ -44,7 +44,7 @@ class ReactiveUnapprovedRepositoryRedisTest {
     }
 
     @Test
-    fun `save unapprovedUser data`() {
+    fun `save unapprovedUser`() {
         // given
         val expected = UnapprovedUser("1", "userB")
         val roomId = Room.Id.from("2")
@@ -62,5 +62,50 @@ class ReactiveUnapprovedRepositoryRedisTest {
         assertThat(
                 ObjectMapper().readValue(registeredValue, UnapprovedUser::class.java)
         ).isEqualTo(expected)
+    }
+
+    @Test
+    fun `contains returns true when the date is registered`() {
+        // given
+        val expected = UnapprovedUser("1", "userA")
+        val roomId = Room.Id.from("3")
+
+        Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
+                .hset(
+                        UnapprovedUser.createSchemaPrefix(roomId),
+                        mapOf(expected.id to ObjectMapper().writeValueAsString(expected))
+                )
+
+        // when
+        val actual = reactiveUnapprovedUserRepositoryRedis.contains(roomId, expected.id)
+
+        // then
+        StepVerifier.create(actual)
+                .expectNext(true)
+                .verifyComplete()
+    }
+
+    @Test
+    fun `remove unapprovedUser`() {
+        // given
+        val expected = UnapprovedUser("1", "userA")
+        val roomId = Room.Id.from("4")
+
+        Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
+                .hset(
+                        UnapprovedUser.createSchemaPrefix(roomId),
+                        mapOf(expected.id to ObjectMapper().writeValueAsString(expected))
+                )
+
+        // when
+        val actual = reactiveUnapprovedUserRepositoryRedis.remove(roomId, expected.id)
+
+        // then
+        StepVerifier.create(actual)
+                .expectNext(true)
+                .verifyComplete()
+        val registeredValue = Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
+                .hget(UnapprovedUser.createSchemaPrefix(roomId), expected.id)
+        assertThat(registeredValue).isNull()
     }
 }

@@ -29,4 +29,17 @@ class ReactiveUnapprovedUserRepositoryRedis(
                         objectMapper.writeValueAsString(unapprovedUser)
                 )
     }
+
+    override fun contains(roomId: Room.Id, userId: String): Mono<Boolean> {
+        return redisOperations
+                .opsForHash<String, String>()
+                .hasKey(UnapprovedUser.createSchemaPrefix(roomId), userId)
+    }
+
+    override fun remove(roomId: Room.Id, userId: String): Mono<Boolean> {
+        return redisOperations
+                .opsForHash<String, String>()
+                .remove(UnapprovedUser.createSchemaPrefix(roomId), userId)
+                .map { it == 1L }
+    }
 }
