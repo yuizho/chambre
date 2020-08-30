@@ -1,6 +1,5 @@
 package com.github.yuizho.chambre.domain.room
 
-import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.data.redis.connection.stream.RecordId
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono

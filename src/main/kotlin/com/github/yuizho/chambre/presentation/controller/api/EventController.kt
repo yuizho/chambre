@@ -5,8 +5,6 @@ import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryResponse
-import com.github.yuizho.chambre.presentation.dto.EventType
-import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping

@@ -1,10 +1,7 @@
-package com.github.yuizho.chambre.presentation.dto
+package com.github.yuizho.chambre.domain.room
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.yuizho.chambre.domain.room.UnapprovedUser
-import com.github.yuizho.chambre.domain.room.User
 
-// TODO: should move to domain
 data class Message(
         val to: Set<User>,
         val eventType: EventType,

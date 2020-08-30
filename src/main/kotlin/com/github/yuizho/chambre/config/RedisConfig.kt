@@ -1,8 +1,8 @@
 package com.github.yuizho.chambre.config
 
 import com.github.yuizho.chambre.domain.auth.Participant
+import com.github.yuizho.chambre.domain.room.Message
 import com.github.yuizho.chambre.domain.room.Room
-import com.github.yuizho.chambre.presentation.dto.Message
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
