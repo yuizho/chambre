@@ -1,8 +1,6 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.yuizho.chambre.domain.room.*
-import com.github.yuizho.chambre.exception.BusinessException
+import com.github.yuizho.chambre.application.service.room.EventService
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryResponse
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,47 +13,14 @@ import javax.validation.Valid
 @RequestMapping("/event")
 @RestController
 class EventController(
-        private val reactiveRoomRepository: ReactiveRoomRepository,
-        private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
-        private val reactiveEventStreamRepository: ReactiveEventStreamRepository,
-        private val objectMapper: ObjectMapper
+        private val eventService: EventService
 ) {
     @PostMapping("/entry")
     fun entry(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
-        val roomId = Room.Id.from(param.roomId)
-        val room = reactiveRoomRepository.findRoomBy(roomId)
-        val newUser = UnapprovedUser(
+        return eventService.entry(
+                param.roomId,
                 param.userId,
                 param.userName
-        )
-        // TODO: should implement password check?
-        return room
-                .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))
-                .flatMap { room ->
-                    reactiveUnapprovedUserRepository.contains(roomId, param.userId)
-                            .map { joined -> Pair<Room, Boolean>(room, joined) }
-                }
-                .doOnNext { pair ->
-                    if (pair.second) {
-                        throw BusinessException("you have already joined this room.")
-                    }
-                    // TODO: should check same name user?
-                }
-                .flatMap { pair ->
-                    reactiveUnapprovedUserRepository.put(roomId, newUser)
-                            .map { pair.first }
-                }
-                .flatMap { room ->
-                    reactiveEventStreamRepository.push(
-                            roomId,
-                            Message(
-                                    setOf(room.adminUser()),
-                                    EventType.ENTRY,
-                                    // TODO: want to convert it in Repository
-                                    objectMapper.writeValueAsString(newUser)
-                            )
-                    )
-                }
-                .then(Mono.just(EntryResponse()))
+        ).then(Mono.just(EntryResponse()))
     }
 }
