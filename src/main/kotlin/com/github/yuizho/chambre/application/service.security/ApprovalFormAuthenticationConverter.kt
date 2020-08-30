@@ -1,5 +1,6 @@
 package com.github.yuizho.chambre.application.service.security
 
+import com.github.yuizho.chambre.application.service.security.dto.ApprovalAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
 import org.springframework.web.server.ServerWebExchange

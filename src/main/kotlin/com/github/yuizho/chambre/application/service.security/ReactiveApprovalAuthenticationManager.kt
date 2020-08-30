@@ -1,5 +1,6 @@
 package com.github.yuizho.chambre.application.service.security
 
+import com.github.yuizho.chambre.application.service.security.dto.UserAuthenticationToken
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.DisabledException

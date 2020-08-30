@@ -1,4 +1,4 @@
-package com.github.yuizho.chambre.application.service.security
+package com.github.yuizho.chambre.application.service.security.dto
 
 import com.github.yuizho.chambre.domain.room.User
 import org.springframework.security.authentication.AbstractAuthenticationToken
