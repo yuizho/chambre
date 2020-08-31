@@ -8,14 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import reactor.core.publisher.Mono
 import java.util.*
 
-@RequestMapping
+@RequestMapping("/demo")
 @Controller
-class RoomController {
-    @GetMapping("/room")
-    fun index(model: Model): String {
-        //val flux = Flux.range(0, 1).map { "count: $it" }
-        //.delayElements(Duration.ofSeconds(1L));
-        //model.addAttribute("items", ReactiveDataDriverContextVariable(flux, 1))
+class DemoController {
+    @GetMapping("/gm")
+    fun gm(model: Model): String {
         val uuid = UUID.randomUUID().toString()
         model.addAttribute("uuid", Mono.just(uuid))
         model.addAttribute(
@@ -23,6 +20,13 @@ class RoomController {
                 ReactiveSecurityContextHolder.getContext()
                         .map { it.authentication.principal }
         )
-        return "index.html"
+        return "demo/gm"
+    }
+
+    @GetMapping("/user")
+    fun user(model: Model): String {
+        val uuid = UUID.randomUUID().toString()
+        model.addAttribute("uuid", Mono.just(uuid))
+        return "demo/user"
     }
 }

@@ -42,7 +42,7 @@ class SecurityConfig {
                 )
                 // configure endpoints
                 .authorizeExchange()
-                .pathMatchers("/room").permitAll()
+                .pathMatchers("/demo/**").permitAll()
                 .pathMatchers("/auth").permitAll()
                 .pathMatchers("/notify/**").permitAll()
                 .pathMatchers("/event/entry").permitAll()

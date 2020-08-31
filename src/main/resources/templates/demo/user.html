@@ -5,14 +5,6 @@
     <title>Title</title>
 </head>
 <body>
-<h2>auth</h2>
-<div>
-    <label for="token-text">Auth Token: </label>
-    <input type="text" id="token-text" value="hogehoge">
-    <button id="auth-button">auth</button>
-    <div th:text="${context}"></div>
-</div>
-
 <h2>entry</h2>
 <div>
     <label for="room-id-text">roomId: </label>
@@ -27,32 +19,16 @@
     <button id="entry-button">entry</button>
 </div>
 
-<ul id="list"></ul>
 <script th:inline="javascript">
     {
         const csrfHeaderName = /*[[${_csrf.headerName}]]*/ "";
         const csrfToken = /*[[${_csrf.token}]]*/ "";
-        document.querySelector("#auth-button").addEventListener('click', () => {
-            fetch("/auth", {
-                method: "POST",
-                credentials: 'include',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded;",
-                    [csrfHeaderName]: csrfToken
-                },
-                body: "authToken=" + document.querySelector("#token-text").value
-            }).then(data => {
-                console.log(data)
-                location.reload()
-            })
-        })
-
         const uuid = /*[[${uuid}]]*/ "";
         document.querySelector("#entry-button").addEventListener('click', () => {
             const userId = document.querySelector("#user-id-text").value
             const userName = document.querySelector("#user-name-text").value
             const roomId = document.querySelector("#room-id-text").value
-            fetch("event/entry", {
+            fetch("/event/entry", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
@@ -68,15 +44,6 @@
                 console.log(data)
             })
         });
-
-        const eventList = document.getElementById("list");
-        const evtSource = new EventSource(`notify/1`);
-        evtSource.addEventListener("ENTRY", function (e) {
-            const newElement = document.createElement("li");
-            //const obj = JSON.parse(e.data);
-            newElement.innerHTML = e.data
-            eventList.appendChild(newElement);
-        }, false);
     }
 </script>
 </body>

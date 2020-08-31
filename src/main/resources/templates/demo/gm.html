@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>auth</h2>
+<div>
+    <label for="token-text">Auth Token: </label>
+    <input type="text" id="token-text" value="hogehoge">
+    <button id="auth-button">auth</button>
+    <div th:text="${context}"></div>
+</div>
+
+<h2>start sse</h2>
+<div>
+    <button id="sse-button">start sse</button>
+</div>
+
+<ul id="list"></ul>
+<script th:inline="javascript">
+    {
+        const csrfHeaderName = /*[[${_csrf.headerName}]]*/ "";
+        const csrfToken = /*[[${_csrf.token}]]*/ "";
+        document.querySelector("#auth-button").addEventListener('click', () => {
+            fetch("/auth", {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;",
+                    [csrfHeaderName]: csrfToken
+                },
+                body: "authToken=" + document.querySelector("#token-text").value
+            }).then(data => {
+                console.log(data)
+                location.reload()
+            })
+        })
+
+        document.querySelector("#sse-button").addEventListener('click', (e) => {
+            const eventList = document.getElementById("list");
+            const evtSource = new EventSource(`/notify/approved?roomId=1`);
+            evtSource.addEventListener("ENTRY", function (e) {
+                const newElement = document.createElement("li");
+                //const obj = JSON.parse(e.data);
+                newElement.innerHTML = e.data
+                eventList.appendChild(newElement);
+            }, false);
+            e.target.setAttribute("disabled", "disabled");
+        });
+    }
+</script>
+</body>
+</html>
