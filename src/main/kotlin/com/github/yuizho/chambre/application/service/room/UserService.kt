@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
-class EventService(
+class UserService(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
         private val reactiveEventStreamRepository: ReactiveEventStreamRepository,
@@ -19,20 +19,21 @@ class EventService(
                 userId,
                 userName
         )
-        // TODO: should implement password check?
         return reactiveRoomRepository.findRoomBy(roomId)
                 .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))
+                // TODO: ココでパスワードチェック
                 .flatMap { room ->
                     reactiveUnapprovedUserRepository.contains(roomId, userId)
                             .map { joined -> Pair<Room, Boolean>(room, joined) }
                 }
                 .doOnNext { pair ->
+                    // TODO: ココでuserNameの重複有無のみをチェック (なので検索はroomIdのみで検索する感じ)
                     if (pair.second) {
                         throw BusinessException("you have already joined this room.")
                     }
-                    // TODO: should check same name user?
                 }
                 .flatMap { pair ->
+                    // TODO: ココでuserIdをGenerateする
                     reactiveUnapprovedUserRepository.put(roomId, newUser)
                             .map { pair.first }
                 }

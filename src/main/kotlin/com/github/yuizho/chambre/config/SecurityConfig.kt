@@ -45,7 +45,7 @@ class SecurityConfig {
                 .pathMatchers("/demo/**").permitAll()
                 .pathMatchers("/auth").permitAll()
                 .pathMatchers("/notify/**").permitAll()
-                .pathMatchers("/event/entry").permitAll()
+                .pathMatchers("/user/entry").permitAll()
                 .and()
                 .build()
     }

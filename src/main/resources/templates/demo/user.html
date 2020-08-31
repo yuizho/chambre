@@ -28,7 +28,7 @@
             const userId = document.querySelector("#user-id-text").value
             const userName = document.querySelector("#user-name-text").value
             const roomId = document.querySelector("#room-id-text").value
-            fetch("/event/entry", {
+            fetch("/user/entry", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
