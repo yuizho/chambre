@@ -1,6 +1,7 @@
 package com.github.yuizho.chambre.domain.room
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.yuizho.chambre.domain.auth.Participant
 
 data class Message(
         val to: Set<User>,
@@ -16,5 +17,10 @@ data class Message(
 enum class EventType(
         val payloadClass: Class<*>
 ) {
-    ENTRY(UnapprovedUser::class.java)
+    // approved notify
+    ENTRY(UnapprovedUser::class.java),
+
+    // Unapproved notify
+    APPROVED(Participant::class.java),
+    REJECTED(String::class.java)
 }

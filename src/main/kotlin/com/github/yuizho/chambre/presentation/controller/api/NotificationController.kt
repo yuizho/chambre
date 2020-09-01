@@ -17,10 +17,23 @@ import reactor.core.publisher.Mono
 class NotificationController(
         private val notificationService: NotificationService
 ) {
-    // TODO: add the notification for entry user
+    @GetMapping("/unapproved")
+    fun unapprovedNotify(
+            @RequestParam("roomId") roomId: String,
+            @RequestParam("userId") userId: String
+
+    ): Flux<ServerSentEvent<String>> {
+        return notificationService.unapprovedNotify(roomId, userId)
+                .map { message ->
+                    ServerSentEvent
+                            .builder(message.payload)
+                            .event(message.eventType.name)
+                            .build()
+                }
+    }
 
     @GetMapping("/approved")
-    fun approvedNotify(@RequestParam("roomId") roomId: String): Flux<ServerSentEvent<String>> {
+    fun notify(@RequestParam("roomId") roomId: String): Flux<ServerSentEvent<String>> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
                     it.authentication.principal as User
