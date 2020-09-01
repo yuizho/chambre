@@ -1,7 +1,7 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
 import com.github.yuizho.chambre.application.service.room.NotificationService
-import com.github.yuizho.chambre.domain.room.User
+import com.github.yuizho.chambre.application.service.security.dto.UserSession
 import com.github.yuizho.chambre.exception.BusinessException
 import org.springframework.http.codec.ServerSentEvent
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
@@ -36,11 +36,11 @@ class NotificationController(
     fun notify(@RequestParam("roomId") roomId: String): Flux<ServerSentEvent<String>> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
-                    it.authentication.principal as User
+                    it.authentication.principal as UserSession
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMapMany { user ->
-                    notificationService.notify(roomId, user)
+                    notificationService.notify(roomId, user.userId)
                             .map { message ->
                                 ServerSentEvent
                                         .builder(message.payload)
