@@ -25,9 +25,7 @@ class ReactiveApprovalAuthenticationManager(
         // check the User
         return user
                 .switchIfEmpty(Mono.error(DisabledException("the authenticationToken ($authToken) is not available")))
-                .doOnNext {
-                    it.status.validate()
-                }.map {
+                .map {
                     UserAuthenticationToken(it).also { uat ->
                         uat.isAuthenticated = true
                     } as Authentication

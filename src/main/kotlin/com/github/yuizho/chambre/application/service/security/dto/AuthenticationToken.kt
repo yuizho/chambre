@@ -1,6 +1,5 @@
 package com.github.yuizho.chambre.application.service.security.dto
 
-import com.github.yuizho.chambre.domain.room.User
 import org.springframework.security.authentication.AbstractAuthenticationToken
 
 class ApprovalAuthenticationToken(
@@ -16,7 +15,7 @@ class ApprovalAuthenticationToken(
 }
 
 class UserAuthenticationToken(
-        private val user: User
+        private val user: UserSession
 ) : AbstractAuthenticationToken(listOf(user.role.grantedAuthority)) {
     override fun getCredentials(): Any? {
         return null
