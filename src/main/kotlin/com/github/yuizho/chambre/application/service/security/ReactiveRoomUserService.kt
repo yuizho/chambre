@@ -16,7 +16,7 @@ class ReactiveRoomUserServiceImpl(
         private val reactiveRoomRepository: ReactiveRoomRepository
 ) : ReactiveRoomUserService {
     override fun retrieveUser(token: String): Mono<UserSession> {
-        return reactiveParticipantRepository.findAuthContainerBy(Participant.Id.from(token))
+        return reactiveParticipantRepository.findParticipantBy(Participant.Id.from(token))
                 .flatMap { ac ->
                     reactiveRoomRepository.findRoomBy(Room.Id.fromIdWithSchemaPrefix(ac.roomId))
                             .map { r -> Pair(ac.userId, r) }

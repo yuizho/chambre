@@ -37,7 +37,7 @@ class ReactiveParticipantRepositoryRedisTest {
                 )
 
         // when
-        val actual = reactiveParticipantRepositoryRedis.findAuthContainerBy(expected.token)
+        val actual = reactiveParticipantRepositoryRedis.findParticipantBy(expected.token)
 
         // then
         StepVerifier.create(actual)
