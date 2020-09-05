@@ -44,8 +44,9 @@ class SecurityConfig {
                 .authorizeExchange()
                 .pathMatchers("/demo/**").permitAll()
                 .pathMatchers("/auth").permitAll()
-                .pathMatchers("/notify/**").permitAll()
+                .pathMatchers("/notify/unapproved").permitAll()
                 .pathMatchers("/user/entry").permitAll()
+                .anyExchange().authenticated()
                 .and()
                 .build()
     }
