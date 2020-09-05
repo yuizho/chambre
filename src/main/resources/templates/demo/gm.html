@@ -18,6 +18,15 @@
     <button id="sse-button">start sse</button>
 </div>
 
+<h2>approve user</h2>
+<div>
+    <input type="text" id="user-id-text" value="">
+    <input type="text" id="user-name-text" value="">
+    <button id="approve-button">approve</button>
+    <div id="auth-token"></div>
+</div>
+
+<h2>sse notification</h2>
 <ul id="list"></ul>
 <script th:inline="javascript">
     {
@@ -41,14 +50,37 @@
         document.querySelector("#sse-button").addEventListener('click', (e) => {
             const eventList = document.getElementById("list");
             const evtSource = new EventSource(`/notify/approved?roomId=1`);
-            evtSource.addEventListener("ENTRY", function (e) {
+            const handler = (e, event) => {
                 const newElement = document.createElement("li");
-                //const obj = JSON.parse(e.data);
-                newElement.innerHTML = e.data
+                newElement.innerHTML = `${event}: ${e.data}`
                 eventList.appendChild(newElement);
-            }, false);
+            };
+            evtSource.addEventListener("ENTRY", (e) => handler(e, "entry"), false);
+            evtSource.addEventListener("JOIN", (e) => handler(e, "join"), false);
             e.target.setAttribute("disabled", "disabled");
         });
+
+        document.querySelector("#approve-button").addEventListener('click', () => {
+            const userId = document.getElementById("user-id-text").value;
+            const userName = document.getElementById("user-name-text").value;
+            fetch("/gm/approve", {
+                method: "POST",
+                credentials: 'same-origin',
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    [csrfHeaderName]: csrfToken
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    userName: userName
+                })
+            }).then(data => {
+                data.json().then(body => {
+                    console.log(body)
+                    document.getElementById("auth-token").textContent = JSON.stringify(body);
+                });
+            })
+        })
     }
 </script>
 </body>

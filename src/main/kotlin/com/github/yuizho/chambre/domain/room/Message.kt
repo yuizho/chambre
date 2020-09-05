@@ -19,6 +19,7 @@ enum class EventType(
 ) {
     // approved notify
     ENTRY(UnapprovedUser::class.java),
+    JOIN(User::class.java),
 
     // Unapproved notify
     APPROVED(Participant::class.java),
