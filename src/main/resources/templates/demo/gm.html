@@ -55,7 +55,7 @@
                 newElement.innerHTML = `${event}: ${e.data}`
                 eventList.appendChild(newElement);
             };
-            evtSource.addEventListener("ENTRY", (e) => handler(e, "entry"), false);
+            evtSource.addEventListener("APPLY", (e) => handler(e, "entry"), false);
             evtSource.addEventListener("JOIN", (e) => handler(e, "join"), false);
             e.target.setAttribute("disabled", "disabled");
         });
