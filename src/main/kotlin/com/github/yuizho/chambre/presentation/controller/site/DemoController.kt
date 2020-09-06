@@ -27,6 +27,11 @@ class DemoController {
     fun user(model: Model): String {
         val uuid = UUID.randomUUID().toString()
         model.addAttribute("uuid", Mono.just(uuid))
+        model.addAttribute(
+                "context",
+                ReactiveSecurityContextHolder.getContext()
+                        .map { it.authentication.principal }
+        )
         return "demo/user"
     }
 }

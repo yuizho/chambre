@@ -19,6 +19,14 @@
     <button id="entry-button">entry</button>
 </div>
 
+<h2>auth</h2>
+<div>
+    <label for="token-text">Auth Token: </label>
+    <input type="text" id="token-text" value="">
+    <button id="auth-button">auth</button>
+    <div th:text="${context}"></div>
+</div>
+
 <h2>sse notification</h2>
 <ul id="list"></ul>
 
@@ -51,8 +59,28 @@
                     const newElement = document.createElement("li");
                     newElement.innerHTML = `${event}: ${e.data}`
                     eventList.appendChild(newElement);
+                    return JSON.parse(e.data);
                 };
-                evtSource.addEventListener("APPROVED", (e) => handler(e, "approved"), false);
+                evtSource.addEventListener("APPROVED", (e) => {
+                    var result = handler(e, "approved");
+                    document.getElementById("token-text").value = result.token
+                }, false);
+            })
+        });
+
+
+        document.querySelector("#auth-button").addEventListener('click', () => {
+            fetch("/auth", {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;",
+                    [csrfHeaderName]: csrfToken
+                },
+                body: "authToken=" + document.querySelector("#token-text").value
+            }).then(data => {
+                console.log(data)
+                location.reload()
             })
         });
     }
