@@ -23,6 +23,6 @@ data class UnapprovedUser @JsonCreator constructor(
                         to,
                         AppliedPayload(id, name)
                 )
-        ).then(Mono.just(true))
+        )
     }
 }
