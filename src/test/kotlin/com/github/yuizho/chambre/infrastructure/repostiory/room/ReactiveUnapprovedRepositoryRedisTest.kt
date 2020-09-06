@@ -56,12 +56,6 @@ class ReactiveUnapprovedRepositoryRedisTest {
         StepVerifier.create(actual)
                 .expectNext(true)
                 .verifyComplete()
-
-        val registeredValue = Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
-                .hget(UnapprovedUser.createSchemaPrefix(roomId), expected.id)
-        assertThat(
-                ObjectMapper().readValue(registeredValue, UnapprovedUser::class.java)
-        ).isEqualTo(expected)
     }
 
     @Test
