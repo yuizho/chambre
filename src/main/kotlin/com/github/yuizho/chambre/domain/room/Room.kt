@@ -83,14 +83,14 @@ data class Room @JsonCreator constructor(
         users.add(user)
         val authToken = UUID.randomUUID().toString()
         return publisher.publish(UserApproved(
-                UnapprovedEvent.Id.from(id.getIdIdWithSchemaPrefix()),
+                Event.Id.from(id.getIdIdWithSchemaPrefix()),
                 setOf(user),
                 UserApprovedPayload(authToken)
         )).flatMap {
             publisher.publish(Joined(
-                    ApprovedEvent.Id.from(id.getIdIdWithSchemaPrefix()),
+                    Event.Id.from(id.getIdIdWithSchemaPrefix()),
                     users,
-                    JoinedPayload(user.id, user.name)
+                    AppliedPayload(user.id, user.name)
             ))
         }.log().then(Mono.just(authToken))
     }

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class UserApproved @JsonCreator constructor(
-        override val id: UnapprovedEvent.Id,
+        override val id: Event.Id,
         override val to: Set<User>,
         override val payload: UserApprovedPayload
-) : UnapprovedEvent<UserApprovedPayload> {
+) : Event<UserApprovedPayload> {
     companion object {
         const val EVENT_TYPE = "APPROVED"
     }

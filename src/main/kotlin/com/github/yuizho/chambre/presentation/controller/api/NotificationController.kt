@@ -23,11 +23,11 @@ class NotificationController(
             @RequestParam("userId") userId: String
 
     ): Flux<ServerSentEvent<String>> {
-        return notificationService.unapprovedNotify(roomId, userId)
-                .map { message ->
+        return notificationService.notify(roomId, userId)
+                .map { event ->
                     ServerSentEvent
-                            .builder(message.payload)
-                            .event(message.eventType.name)
+                            .builder(event.second)
+                            .event(event.first)
                             .build()
                 }
     }
@@ -41,10 +41,10 @@ class NotificationController(
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMapMany { user ->
                     notificationService.notify(roomId, user.userId)
-                            .map { message ->
+                            .map { event ->
                                 ServerSentEvent
-                                        .builder(message.payload)
-                                        .event(message.eventType.name)
+                                        .builder(event.second)
+                                        .event(event.first)
                                         .build()
                             }
                 }

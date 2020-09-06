@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono
 class UserService(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
-        private val reactiveEventStreamRepository: ReactiveEventStreamRepository,
+        private val eventPublisher: EventPublisher,
         private val objectMapper: ObjectMapper
 ) {
     fun entry(roomId: String, userId: String, userName: String): Mono<*> {
@@ -38,13 +38,12 @@ class UserService(
                             .map { pair.first }
                 }
                 .flatMap { room ->
-                    reactiveEventStreamRepository.push(
-                            roomId,
-                            Message(
+                    // TODO: want to publish event in domain
+                    eventPublisher.publish(
+                            Applied(
+                                    Event.Id.from(roomId.getIdIdWithSchemaPrefix()),
                                     setOf(room.adminUser()),
-                                    EventType.ENTRY,
-                                    // TODO: want to convert it in Repository
-                                    objectMapper.writeValueAsString(newUser)
+                                    AppliedPayload(newUser.id, newUser.name)
                             )
                     )
                 }

@@ -3,13 +3,14 @@ package com.github.yuizho.chambre.domain.room
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class Joined @JsonCreator constructor(
+data class Applied @JsonCreator constructor(
         override val id: Event.Id,
         override val to: Set<User>,
         override val payload: AppliedPayload
 ) : Event<AppliedPayload> {
     companion object {
-        const val EVENT_TYPE = "JOIN"
+        // TODO: change event type
+        const val EVENT_TYPE = "ENTRY"
     }
 
     override fun getEventName(): String {
@@ -17,9 +18,9 @@ data class Joined @JsonCreator constructor(
     }
 }
 
-data class JoinedPayload @JsonCreator constructor(
+data class AppliedPayload @JsonCreator constructor(
         @param:JsonProperty("id")
-        val joinedUserId: String,
+        val appliedUserId: String,
         @param:JsonProperty("name")
-        val joinedUserName: String
+        val appliedUserName: String
 )

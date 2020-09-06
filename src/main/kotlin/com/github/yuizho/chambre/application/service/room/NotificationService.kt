@@ -1,29 +1,23 @@
 package com.github.yuizho.chambre.application.service.room
 
-import com.github.yuizho.chambre.domain.room.Message
-import com.github.yuizho.chambre.domain.room.ReactiveEventStreamRepository
-import com.github.yuizho.chambre.domain.room.ReactiveUnapprovedEventStreamRepository
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.yuizho.chambre.domain.room.EventSubscriber
 import com.github.yuizho.chambre.domain.room.Room
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 
 @Service
 class NotificationService(
-        private val reactiveEventStreamRepository: ReactiveEventStreamRepository,
-        private val reactiveUnapprovedEventStreamRepository: ReactiveUnapprovedEventStreamRepository
+        private val eventSubscriber: EventSubscriber,
+        private val objectMapper: ObjectMapper
 ) {
-    fun unapprovedNotify(roomId: String, userId: String): Flux<Message> {
-        return reactiveUnapprovedEventStreamRepository.receive(Room.Id.from(roomId))
-                .filter { room ->
-                    room.to.any { user -> user.id == userId }
+    fun notify(roomId: String, userId: String): Flux<Pair<String, String>> {
+        return eventSubscriber.subscribe(Room.Id.from(roomId))
+                .filter {
+                    it.to.any { user -> user.id == userId }
                 }
-                .log()
-    }
-
-    fun notify(roomId: String, userId: String): Flux<Message> {
-        return reactiveEventStreamRepository.receive(Room.Id.from(roomId))
-                .filter { room ->
-                    room.to.any { user -> user.id == userId }
+                .map {
+                    Pair(it.getEventName(), objectMapper.writeValueAsString(it.payload))
                 }
                 .log()
     }

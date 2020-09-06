@@ -18,7 +18,7 @@ class EventSubscriberImpl(
 
     override fun subscribe(roomId: Room.Id): Flux<Event<*>> {
         // TODO: shold be fromStart?
-        val id = "unapproved-event:${roomId.getIdIdWithSchemaPrefix()}"
+        val id = "event:${roomId.getIdIdWithSchemaPrefix()}"
         return streamReceiver.receive(StreamOffset.latest(id))
                 .map {
                     // TODO: add error handling

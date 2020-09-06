@@ -9,18 +9,25 @@ class EventFactory(
 ) {
     fun getEvent(id: String, to: Set<User>, eventType: String, payload: String): Event<*> {
         return when (eventType) {
+            Applied.EVENT_TYPE -> {
+                Applied(
+                        Event.Id.from(id),
+                        to,
+                        objectMapper.readValue(payload, AppliedPayload::class.java)
+                )
+            }
             UserApproved.EVENT_TYPE -> {
                 UserApproved(
-                        UnapprovedEvent.Id.from(id),
+                        Event.Id.from(id),
                         to,
                         objectMapper.readValue(payload, UserApprovedPayload::class.java)
                 )
             }
             Joined.EVENT_TYPE -> {
                 Joined(
-                        ApprovedEvent.Id.from(id),
+                        Event.Id.from(id),
                         to,
-                        objectMapper.readValue(payload, JoinedPayload::class.java)
+                        objectMapper.readValue(payload, AppliedPayload::class.java)
                 )
             }
             else -> throw IllegalArgumentException("unexpected eventType.")
