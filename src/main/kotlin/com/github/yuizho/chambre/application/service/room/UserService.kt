@@ -1,6 +1,5 @@
 package com.github.yuizho.chambre.application.service.room
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import org.springframework.stereotype.Service
@@ -10,8 +9,7 @@ import reactor.core.publisher.Mono
 class UserService(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
-        private val eventPublisher: EventPublisher,
-        private val objectMapper: ObjectMapper
+        private val eventPublisher: EventPublisher
 ) {
     fun entry(roomId: String, userId: String, userName: String): Mono<*> {
         val roomId = Room.Id.from(roomId)
@@ -38,14 +36,7 @@ class UserService(
                             .map { pair.first }
                 }
                 .flatMap { room ->
-                    // TODO: want to publish event in domain
-                    eventPublisher.publish(
-                            Applied(
-                                    Event.Id.from(roomId.getIdIdWithSchemaPrefix()),
-                                    setOf(room.adminUser()),
-                                    AppliedPayload(newUser.id, newUser.name)
-                            )
-                    )
+                    newUser.apply(eventPublisher, roomId, setOf(room.adminUser()))
                 }
     }
 }

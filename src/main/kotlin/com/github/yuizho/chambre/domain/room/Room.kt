@@ -1,13 +1,11 @@
 package com.github.yuizho.chambre.domain.room
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import reactor.core.publisher.Mono
 import java.util.*
 
-@JsonIgnoreProperties(value = ["publisher"])
 data class Room @JsonCreator constructor(
         @param:JsonProperty("id")
         val id: Id,
@@ -16,9 +14,6 @@ data class Room @JsonCreator constructor(
         @param:JsonProperty("users")
         val users: MutableSet<User> = mutableSetOf()
 ) {
-    @field:JsonIgnoreProperties
-    var publisher: EventPublisher? = null
-
     companion object {
         const val SCHEMA_PREFIX = "room:"
     }
@@ -77,9 +72,8 @@ data class Room @JsonCreator constructor(
 
     fun adminUser(): User = users.first { it.role == Role.ADMIN }
 
-    fun approve(user: User): Mono<String> {
-        val publisher = this.publisher
-                ?: throw IllegalStateException("publisher is null. approve operation needs publisher.")
+    fun approve(publisher: EventPublisher, user: User): Mono<String> {
+        val publisher = publisher
         users.add(user)
         val authToken = UUID.randomUUID().toString()
         return publisher.publish(UserApproved(

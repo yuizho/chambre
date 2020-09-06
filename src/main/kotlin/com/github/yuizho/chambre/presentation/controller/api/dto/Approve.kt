@@ -12,6 +12,4 @@ data class ApproveParamter(
         val userName: String
 )
 
-class ApproveResponse(
-        val authToken: String
-)
+class ApproveResponse

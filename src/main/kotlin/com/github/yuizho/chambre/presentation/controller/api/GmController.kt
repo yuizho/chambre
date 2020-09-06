@@ -1,13 +1,9 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuizho.chambre.application.service.security.dto.UserSession
 import com.github.yuizho.chambre.domain.auth.Participant
 import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
-import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
-import com.github.yuizho.chambre.domain.room.Role
-import com.github.yuizho.chambre.domain.room.Status
-import com.github.yuizho.chambre.domain.room.User
+import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.ApproveParamter
 import com.github.yuizho.chambre.presentation.controller.api.dto.ApproveResponse
@@ -24,7 +20,7 @@ import javax.validation.Valid
 class GmController(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val participantRepository: ReactiveParticipantRepository,
-        private val objectMapper: ObjectMapper
+        private val eventPublisher: EventPublisher
 ) {
     @PostMapping("/approve")
     fun approve(@RequestBody @Valid param: ApproveParamter): Mono<ApproveResponse> {
@@ -40,7 +36,7 @@ class GmController(
                 .flatMap {
                     // add user to the room
                     reactiveRoomRepository.findRoomBy(it.second).flatMap { r ->
-                        r.approve(it.first)
+                        r.approve(eventPublisher, it.first)
                                 .flatMap { token ->
                                     reactiveRoomRepository.save(r)
                                             .map { Pair(r, token) }
@@ -51,17 +47,15 @@ class GmController(
                 }
                 .flatMap {
                     // save auth info
-                    val participant = Participant(
-                            Participant.Id.from(it.third),
-                            it.second.id.getIdIdWithSchemaPrefix(),
-                            it.first.id
-                    )
                     participantRepository
-                            .save(participant)
+                            .save(Participant(
+                                    Participant.Id.from(it.third),
+                                    it.second.id.getIdIdWithSchemaPrefix(),
+                                    it.first.id
+                            ))
                             .map { _ -> it.third }
                 }
-                .flatMap { token ->
-                    Mono.just(ApproveResponse(token))
-                }
+                .then(Mono.just(ApproveResponse()))
+
     }
 }
