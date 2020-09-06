@@ -1,6 +1,6 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
-import com.github.yuizho.chambre.application.service.room.NotificationService
+import com.github.yuizho.chambre.application.service.room.EventSubscribeService
 import com.github.yuizho.chambre.application.service.security.dto.UserSession
 import com.github.yuizho.chambre.exception.BusinessException
 import org.springframework.http.codec.ServerSentEvent
@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-@RequestMapping("/notify")
+@RequestMapping("/subscribe")
 @RestController
-class NotificationController(
-        private val notificationService: NotificationService
+class EventSubscribeController(
+        private val eventSubscribeService: EventSubscribeService
 ) {
     @GetMapping("/unapproved")
-    fun unapprovedNotify(
+    fun unapprovedSubscribe(
             @RequestParam("roomId") roomId: String,
             @RequestParam("userId") userId: String
 
     ): Flux<ServerSentEvent<String>> {
-        return notificationService.notify(roomId, userId)
+        return eventSubscribeService.subscribe(roomId, userId)
                 .map { event ->
                     ServerSentEvent
                             .builder(event.second)
@@ -33,14 +33,14 @@ class NotificationController(
     }
 
     @GetMapping("/approved")
-    fun notify(@RequestParam("roomId") roomId: String): Flux<ServerSentEvent<String>> {
+    fun subscribe(@RequestParam("roomId") roomId: String): Flux<ServerSentEvent<String>> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
                     it.authentication.principal as UserSession
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMapMany { user ->
-                    notificationService.notify(roomId, user.userId)
+                    eventSubscribeService.subscribe(roomId, user.userId)
                             .map { event ->
                                 ServerSentEvent
                                         .builder(event.second)

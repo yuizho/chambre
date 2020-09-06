@@ -49,7 +49,7 @@
 
         document.querySelector("#sse-button").addEventListener('click', (e) => {
             const eventList = document.getElementById("list");
-            const evtSource = new EventSource(`/notify/approved?roomId=1`);
+            const evtSource = new EventSource(`/subscribe/approved?roomId=1`);
             const handler = (e, event) => {
                 const newElement = document.createElement("li");
                 newElement.innerHTML = `${event}: ${e.data}`

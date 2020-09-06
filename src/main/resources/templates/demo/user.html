@@ -54,7 +54,7 @@
             }).then(data => {
                 console.log(data)
                 const eventList = document.getElementById("list");
-                const evtSource = new EventSource(`/notify/unapproved?roomId=${roomId}&userId=${userId}`);
+                const evtSource = new EventSource(`/subscribe/unapproved?roomId=${roomId}&userId=${userId}`);
                 const handler = (e, event) => {
                     const newElement = document.createElement("li");
                     newElement.innerHTML = `${event}: ${e.data}`

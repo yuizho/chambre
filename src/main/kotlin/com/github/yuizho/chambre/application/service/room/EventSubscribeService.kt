@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 
 @Service
-class NotificationService(
+class EventSubscribeService(
         private val eventSubscriber: EventSubscriber,
         private val objectMapper: ObjectMapper
 ) {
-    fun notify(roomId: String, userId: String): Flux<Pair<String, String>> {
+    fun subscribe(roomId: String, userId: String): Flux<Pair<String, String>> {
         return eventSubscriber.subscribe(Room.Id.from(roomId))
                 .filter {
                     it.to.any { user -> user.id == userId }
