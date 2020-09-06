@@ -3,7 +3,6 @@ package com.github.yuizho.chambre.infrastructure.repostiory.room
 import com.github.yuizho.chambre.RedisConfig
 import com.github.yuizho.chambre.domain.room.Role
 import com.github.yuizho.chambre.domain.room.Room
-import com.github.yuizho.chambre.domain.room.Status
 import com.github.yuizho.chambre.domain.room.User
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,8 +29,8 @@ class ReactiveRoomRepositoryRedisTest {
                 Room.Id.from("1"),
                 Room.Status.OPEN,
                 mutableSetOf(
-                        User("1", "foo", Role.ADMIN, Status.AVAILABLE),
-                        User("2", "bar", Role.NORMAL, Status.AVAILABLE)
+                        User("1", "foo", Role.ADMIN),
+                        User("2", "bar", Role.NORMAL)
                 )
         )
 
@@ -58,8 +57,8 @@ class ReactiveRoomRepositoryRedisTest {
                 Room.Id.fromIdWithSchemaPrefix("room:1"),
                 Room.Status.OPEN,
                 mutableSetOf(
-                        User("1", "foo", Role.ADMIN, Status.AVAILABLE),
-                        User("2", "bar", Role.NORMAL, Status.AVAILABLE)
+                        User("1", "foo", Role.ADMIN),
+                        User("2", "bar", Role.NORMAL)
                 )
         )
 

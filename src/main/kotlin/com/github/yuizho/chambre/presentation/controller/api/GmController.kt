@@ -3,7 +3,10 @@ package com.github.yuizho.chambre.presentation.controller.api
 import com.github.yuizho.chambre.application.service.security.dto.UserSession
 import com.github.yuizho.chambre.domain.auth.Participant
 import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
-import com.github.yuizho.chambre.domain.room.*
+import com.github.yuizho.chambre.domain.room.EventPublisher
+import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
+import com.github.yuizho.chambre.domain.room.Role
+import com.github.yuizho.chambre.domain.room.User
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.ApproveParamter
 import com.github.yuizho.chambre.presentation.controller.api.dto.ApproveResponse
@@ -28,7 +31,7 @@ class GmController(
                 .map {
                     val us = it.authentication.principal as UserSession
                     Pair(
-                            User(param.userId, param.userName, Role.NORMAL, Status.AVAILABLE),
+                            User(param.userId, param.userName, Role.NORMAL),
                             us.roomId
                     )
                 }
