@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class Joined @JsonCreator constructor(
         override val id: Event.Id,
         override val to: Set<User>,
-        override val payload: AppliedPayload
-) : Event<AppliedPayload> {
+        override val payload: JoinedPayload
+) : Event<JoinedPayload> {
     companion object {
         const val EVENT_TYPE = "JOIN"
     }

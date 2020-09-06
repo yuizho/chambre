@@ -84,7 +84,7 @@ data class Room @JsonCreator constructor(
             publisher.publish(Joined(
                     Event.Id.from(id.getIdIdWithSchemaPrefix()),
                     users,
-                    AppliedPayload(user.id, user.name)
+                    JoinedPayload(user.id, user.name)
             ))
         }.log().then(Mono.just(authToken))
     }

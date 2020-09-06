@@ -27,7 +27,7 @@ class EventFactory(
                 Joined(
                         Event.Id.from(id),
                         to,
-                        objectMapper.readValue(payload, AppliedPayload::class.java)
+                        objectMapper.readValue(payload, JoinedPayload::class.java)
                 )
             }
             else -> throw IllegalArgumentException("unexpected eventType.")
