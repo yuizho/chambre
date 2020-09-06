@@ -1,6 +1,7 @@
 package com.github.yuizho.chambre.config
 
 import com.github.yuizho.chambre.domain.auth.Participant
+import com.github.yuizho.chambre.domain.room.Event
 import com.github.yuizho.chambre.domain.room.Message
 import com.github.yuizho.chambre.domain.room.Room
 import org.springframework.context.annotation.Bean
@@ -18,6 +19,11 @@ import org.springframework.data.redis.stream.StreamReceiver
 class RedisConfig {
     @Bean
     fun messageReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, Message> {
+        return createReactiveRedisOperationsByContext(factory)
+    }
+
+    @Bean
+    fun publishReactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, Event<*>> {
         return createReactiveRedisOperationsByContext(factory)
     }
 

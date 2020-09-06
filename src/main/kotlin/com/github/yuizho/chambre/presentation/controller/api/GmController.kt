@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
-import java.util.*
 import javax.validation.Valid
 
 @RequestMapping("/gm")
@@ -28,7 +27,6 @@ class GmController(
 ) {
     @PostMapping("/approve")
     fun entry(@RequestBody @Valid param: ApproveParamter): Mono<ApproveResponse> {
-        val authToken = UUID.randomUUID().toString()
         return ReactiveSecurityContextHolder.getContext()
                 .map {
                     val us = it.authentication.principal as UserSession
@@ -41,45 +39,28 @@ class GmController(
                 .flatMap {
                     // add user to the room
                     reactiveRoomRepository.findRoomBy(it.second).flatMap { r ->
-                        r.users.add(it.first)
-                        reactiveRoomRepository.save(r).map { r }
-                    }.map { r ->
-                        Pair(it.first, r)
+                        r.approve(it.first)
+                                .flatMap { token ->
+                                    reactiveRoomRepository.save(r)
+                                            .map { Pair(r, token) }
+                                }
+                    }.map { p ->
+                        Triple(it.first, p.first, p.second)
                     }
                 }
                 .flatMap {
                     // save auth info
                     val participant = Participant(
-                            Participant.Id.from(authToken),
+                            Participant.Id.from(it.third),
                             it.second.id.getIdIdWithSchemaPrefix(),
                             it.first.id
                     )
                     participantRepository
                             .save(participant)
-                            .map { _ -> Triple(it.first, it.second, participant) }
+                            .map { _ -> it.third }
                 }
-                .flatMap {
-                    // push authtoken to approved user
-                    reactiveUnapprovedEventStreamRepository.push(
-                            it.second.id,
-                            Message(
-                                    setOf(it.first),
-                                    EventType.APPROVED,
-                                    objectMapper.writeValueAsString(it.third)
-                            )
-                    ).map { _ -> it }
+                .flatMap { token ->
+                    Mono.just(ApproveResponse(token))
                 }
-                .flatMap {
-                    // push notify to all
-                    reactiveEventStreamRepository.push(
-                            it.second.id,
-                            Message(
-                                    it.second.users,
-                                    EventType.JOIN,
-                                    objectMapper.writeValueAsString(it.first)
-                            )
-                    )
-                }
-                .then(Mono.just(ApproveResponse(authToken)))
     }
 }
