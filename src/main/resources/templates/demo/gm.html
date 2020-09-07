@@ -54,8 +54,14 @@
                 const newElement = document.createElement("li");
                 newElement.innerHTML = `${event}: ${e.data}`
                 eventList.appendChild(newElement);
+                return JSON.parse(e.data);
             };
-            evtSource.addEventListener("APPLY", (e) => handler(e, "entry"), false);
+            evtSource.addEventListener("APPLY",
+                (e) => {
+                    const result = handler(e, "entry");
+                    document.getElementById("user-id-text").value = result.id;
+                    document.getElementById("user-name-text").value = result.name;
+                }, false);
             evtSource.addEventListener("JOIN", (e) => handler(e, "join"), false);
             e.target.setAttribute("disabled", "disabled");
         });
