@@ -77,12 +77,12 @@ data class Room @JsonCreator constructor(
         users.add(user)
         val authToken = UUID.randomUUID().toString()
         return Flux.merge(
-                publisher.publish(UserApproved(
+                publisher.publish(UserApprovedEvent(
                         Event.Id.from(id.getIdIdWithSchemaPrefix()),
                         setOf(user),
                         UserApprovedPayload(authToken)
                 )),
-                publisher.publish(Joined(
+                publisher.publish(JoinedEvent(
                         Event.Id.from(id.getIdIdWithSchemaPrefix()),
                         users,
                         JoinedPayload(user.id, user.name)

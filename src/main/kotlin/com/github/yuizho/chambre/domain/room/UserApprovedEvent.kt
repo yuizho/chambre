@@ -3,7 +3,7 @@ package com.github.yuizho.chambre.domain.room
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class UserApproved @JsonCreator constructor(
+data class UserApprovedEvent @JsonCreator constructor(
         override val id: Event.Id,
         override val to: Set<User>,
         override val payload: UserApprovedPayload
