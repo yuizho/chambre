@@ -3,6 +3,7 @@ package com.github.yuizho.chambre.domain.room
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -73,19 +74,19 @@ data class Room @JsonCreator constructor(
     fun adminUser(): User = users.first { it.role == Role.ADMIN }
 
     fun approve(publisher: EventPublisher, user: User): Mono<String> {
-        val publisher = publisher
         users.add(user)
         val authToken = UUID.randomUUID().toString()
-        return publisher.publish(UserApproved(
-                Event.Id.from(id.getIdIdWithSchemaPrefix()),
-                setOf(user),
-                UserApprovedPayload(authToken)
-        )).flatMap {
-            publisher.publish(Joined(
-                    Event.Id.from(id.getIdIdWithSchemaPrefix()),
-                    users,
-                    JoinedPayload(user.id, user.name)
-            ))
-        }.log().then(Mono.just(authToken))
+        return Flux.merge(
+                publisher.publish(UserApproved(
+                        Event.Id.from(id.getIdIdWithSchemaPrefix()),
+                        setOf(user),
+                        UserApprovedPayload(authToken)
+                )),
+                publisher.publish(Joined(
+                        Event.Id.from(id.getIdIdWithSchemaPrefix()),
+                        users,
+                        JoinedPayload(user.id, user.name)
+                ))
+        ).log().then(Mono.just(authToken))
     }
 }
