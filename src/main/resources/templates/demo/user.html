@@ -10,6 +10,9 @@
     <label for="room-id-text">roomId: </label>
     <input type="text" id="room-id-text" value="1">
     <br>
+    <label for="room-password-text">password: </label>
+    <input type="text" id="room-password-text" value="1">
+    <br>
     <label for="user-id-text">userId: </label>
     <input type="text" id="user-id-text" value="2">
     <br>
@@ -37,6 +40,7 @@
         const uuid = /*[[${uuid}]]*/ "";
         document.querySelector("#entry-button").addEventListener('click', () => {
             const userId = document.querySelector("#user-id-text").value
+            const password = document.querySelector("#room-password-text").value
             const userName = document.querySelector("#user-name-text").value
             const roomId = document.querySelector("#room-id-text").value
             fetch("/user/entry", {
@@ -48,6 +52,7 @@
                 },
                 body: JSON.stringify({
                     roomId: roomId,
+                    roomKey: password,
                     userId: userId,
                     userName: userName
                 })

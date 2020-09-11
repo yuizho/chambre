@@ -10,6 +10,10 @@ import java.util.*
 data class Room @JsonCreator constructor(
         @param:JsonProperty("id")
         val id: Id,
+        @param:JsonProperty("name")
+        val name: String,
+        @param:JsonProperty("key")
+        val key: String,
         @param:JsonProperty("status")
         val status: Status,
         @param:JsonProperty("users")
@@ -61,8 +65,9 @@ data class Room @JsonCreator constructor(
             @field:JsonValue
             val value: Int
     ) {
-        OPEN(0),
-        CLOSE(1);
+        OPENED(0),
+        STARTED(1),
+        CLOSED(2);
 
         @JsonCreator
         fun of(value: Int): Status {

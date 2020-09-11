@@ -19,6 +19,7 @@ class UserController(
     fun entry(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
         return userService.entry(
                 param.roomId,
+                param.roomKey,
                 param.userId,
                 param.userName
         ).then(Mono.just(EntryResponse()))

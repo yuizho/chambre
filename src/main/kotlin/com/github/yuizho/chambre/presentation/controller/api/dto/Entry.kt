@@ -8,6 +8,9 @@ data class EntryParameter(
         @field:Size(min = 1, max = 36)
         val roomId: String,
         @field:NotNull
+        @field:Size(min = 1, max = 10)
+        val roomKey: String,
+        @field:NotNull
         @field:Size(min = 1, max = 36)
         val userId: String,
         @field:NotNull

@@ -11,7 +11,7 @@ class UserService(
         private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
         private val eventPublisher: EventPublisher
 ) {
-    fun entry(roomId: String, userId: String, userName: String): Mono<*> {
+    fun entry(roomId: String, roomKey: String, userId: String, userName: String): Mono<*> {
         val roomId = Room.Id.from(roomId)
         val newUser = UnapprovedUser(
                 userId,
@@ -19,7 +19,11 @@ class UserService(
         )
         return reactiveRoomRepository.findRoomBy(roomId)
                 .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))
-                // TODO: ココでパスワードチェック
+                .doOnNext { room ->
+                    if (room.key != roomKey) {
+                        throw BusinessException("invalid password.")
+                    }
+                }
                 .flatMap { room ->
                     reactiveUnapprovedUserRepository.contains(roomId, userId)
                             .map { joined -> Pair<Room, Boolean>(room, joined) }

@@ -27,7 +27,9 @@ class ReactiveRoomRepositoryRedisTest {
         // given
         val expected = Room(
                 Room.Id.from("1"),
-                Room.Status.OPEN,
+                "roomA",
+                "1",
+                Room.Status.OPENED,
                 mutableSetOf(
                         User("1", "foo", Role.ADMIN),
                         User("2", "bar", Role.NORMAL)
@@ -55,7 +57,9 @@ class ReactiveRoomRepositoryRedisTest {
         // given
         val expected = Room(
                 Room.Id.fromIdWithSchemaPrefix("room:1"),
-                Room.Status.OPEN,
+                "roomA",
+                "1",
+                Room.Status.OPENED,
                 mutableSetOf(
                         User("1", "foo", Role.ADMIN),
                         User("2", "bar", Role.NORMAL)
