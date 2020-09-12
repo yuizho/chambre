@@ -1,10 +1,7 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
+import com.github.yuizho.chambre.application.service.room.GameMasterService
 import com.github.yuizho.chambre.application.service.security.dto.UserSession
-import com.github.yuizho.chambre.domain.auth.Participant
-import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
-import com.github.yuizho.chambre.domain.room.EventPublisher
-import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
 import com.github.yuizho.chambre.domain.room.Role
 import com.github.yuizho.chambre.domain.room.User
 import com.github.yuizho.chambre.exception.BusinessException
@@ -20,10 +17,8 @@ import javax.validation.Valid
 
 @RequestMapping("/gm")
 @RestController
-class GmController(
-        private val reactiveRoomRepository: ReactiveRoomRepository,
-        private val participantRepository: ReactiveParticipantRepository,
-        private val eventPublisher: EventPublisher
+class GameMasterController(
+        private val gameMasterService: GameMasterService
 ) {
     @PostMapping("/approve")
     fun approve(@RequestBody @Valid param: ApproveParamter): Mono<ApproveResponse> {
@@ -36,26 +31,7 @@ class GmController(
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMap { (user, roomId) ->
-                    // add user to the room
-                    reactiveRoomRepository.findRoomBy(roomId).flatMap { r ->
-                        r.approve(eventPublisher, user)
-                                .flatMap { token ->
-                                    reactiveRoomRepository.save(r)
-                                            .map { Pair(r, token) }
-                                }
-                    }.map { (room, token) ->
-                        Triple(user, room, token)
-                    }
-                }
-                .flatMap { (user, room, token) ->
-                    // save auth info
-                    participantRepository
-                            .save(Participant(
-                                    Participant.Id.from(token),
-                                    room.id.getIdIdWithSchemaPrefix(),
-                                    user.id
-                            ))
-                            .map { token }
+                    gameMasterService.approve(user, roomId)
                 }
                 .then(Mono.just(ApproveResponse()))
 
