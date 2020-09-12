@@ -20,8 +20,9 @@ class UserController(
         return userService.entry(
                 param.roomId,
                 param.roomKey,
-                param.userId,
                 param.userName
-        ).then(Mono.just(EntryResponse()))
+        ).map { userId ->
+            EntryResponse(userId)
+        }
     }
 }

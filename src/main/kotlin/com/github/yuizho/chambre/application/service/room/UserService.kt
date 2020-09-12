@@ -4,6 +4,7 @@ import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import java.util.*
 
 @Service
 class UserService(
@@ -11,8 +12,9 @@ class UserService(
         private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
         private val eventPublisher: EventPublisher
 ) {
-    fun entry(roomId: String, roomKey: String, userId: String, userName: String): Mono<*> {
+    fun entry(roomId: String, roomKey: String, userName: String): Mono<String> {
         val roomId = Room.Id.from(roomId)
+        val userId = UUID.randomUUID().toString()
         val newUser = UnapprovedUser(
                 userId,
                 userName
@@ -35,12 +37,12 @@ class UserService(
                     }
                 }
                 .flatMap { (room, _) ->
-                    // TODO: ココでuserIdをGenerateする
                     reactiveUnapprovedUserRepository.put(roomId, newUser)
                             .map { room }
                 }
                 .flatMap { room ->
                     newUser.apply(eventPublisher, roomId, setOf(room.adminUser()))
                 }
+                .then(Mono.just(userId))
     }
 }

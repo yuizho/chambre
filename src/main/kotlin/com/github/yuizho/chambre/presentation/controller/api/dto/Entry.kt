@@ -11,11 +11,10 @@ data class EntryParameter(
         @field:Size(min = 1, max = 10)
         val roomKey: String,
         @field:NotNull
-        @field:Size(min = 1, max = 36)
-        val userId: String,
-        @field:NotNull
         @field:Size(min = 1, max = 20)
         val userName: String
 )
 
-class EntryResponse
+data class EntryResponse(
+        val userId: String
+)
