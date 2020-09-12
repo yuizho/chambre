@@ -3,6 +3,7 @@ package com.github.yuizho.chambre.config
 import com.github.yuizho.chambre.application.service.security.*
 import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
 import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
+import com.github.yuizho.chambre.domain.room.Role
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -46,6 +47,7 @@ class SecurityConfig {
                 .pathMatchers("/auth").permitAll()
                 .pathMatchers("/subscribe/unapproved").permitAll()
                 .pathMatchers("/user/apply").permitAll()
+                .pathMatchers("/gm/**").hasAuthority(Role.ADMIN.name)
                 .anyExchange().authenticated()
                 .and()
                 .build()
