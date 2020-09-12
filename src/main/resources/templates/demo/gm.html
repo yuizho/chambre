@@ -50,7 +50,7 @@
 
         document.querySelector("#sse-button").addEventListener('click', (e) => {
             const eventList = document.getElementById("list");
-            const evtSource = new EventSource(`/subscribe/approved?roomId=1`);
+            const evtSource = new EventSource(`/api/subscribe/approved?roomId=1`);
             const handler = (e, event) => {
                 const newElement = document.createElement("li");
                 newElement.innerHTML = `${event}: ${e.data}`
@@ -70,7 +70,7 @@
         document.querySelector("#approve-button").addEventListener('click', () => {
             const userId = document.getElementById("user-id-text").value;
             const userName = document.getElementById("user-name-text").value;
-            fetch("/gm/approve", {
+            fetch("/api/gm/approve", {
                 method: "POST",
                 credentials: 'same-origin',
                 headers: {
@@ -91,7 +91,7 @@
 
         document.querySelector("#reject-button").addEventListener('click', () => {
             const userId = document.getElementById("user-id-text").value;
-            fetch("/gm/reject", {
+            fetch("/api/gm/reject", {
                 method: "POST",
                 credentials: 'same-origin',
                 headers: {

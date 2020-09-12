@@ -43,7 +43,7 @@
             const password = document.querySelector("#room-password-text").value
             const userName = document.querySelector("#user-name-text").value
             const roomId = document.querySelector("#room-id-text").value
-            fetch("/user/apply", {
+            fetch("/api/user/apply", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
@@ -62,7 +62,7 @@
                         const data = new TextDecoder().decode(value)
                         console.log(data)
                         const eventList = document.getElementById("list");
-                        const evtSource = new EventSource(`/subscribe/unapproved?roomId=${roomId}&userId=${JSON.parse(data).userId}`);
+                        const evtSource = new EventSource(`/api/subscribe/unapproved?roomId=${roomId}&userId=${JSON.parse(data).userId}`);
                         const handler = (e, event) => {
                             const newElement = document.createElement("li");
                             newElement.innerHTML = `${event}: ${e.data}`
@@ -96,7 +96,7 @@
 
         document.querySelector("#sse-button").addEventListener('click', (e) => {
             const eventList = document.getElementById("list");
-            const evtSource = new EventSource(`/subscribe/approved?roomId=1`);
+            const evtSource = new EventSource(`/api/subscribe/approved?roomId=1`);
             const handler = (e, event) => {
                 const newElement = document.createElement("li");
                 newElement.innerHTML = `${event}: ${e.data}`

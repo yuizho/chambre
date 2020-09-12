@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 import javax.validation.Valid
 
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @RestController
 class UserController(
         private val userService: UserService
