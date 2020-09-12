@@ -30,6 +30,12 @@ class EventFactory(
                         objectMapper.readValue(payload, JoinedPayload::class.java)
                 )
             }
+            RejectedEvent.EVENT_TYPE -> {
+                RejectedEvent(
+                        id,
+                        to
+                )
+            }
             else -> throw IllegalArgumentException("unexpected eventType.")
         }
     }

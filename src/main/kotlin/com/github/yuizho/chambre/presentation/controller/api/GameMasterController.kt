@@ -7,6 +7,8 @@ import com.github.yuizho.chambre.domain.room.User
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.ApproveParamter
 import com.github.yuizho.chambre.presentation.controller.api.dto.ApproveResponse
+import com.github.yuizho.chambre.presentation.controller.api.dto.RejectParameter
+import com.github.yuizho.chambre.presentation.controller.api.dto.RejectResponse
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -35,5 +37,18 @@ class GameMasterController(
                 }
                 .then(Mono.just(ApproveResponse()))
 
+    }
+
+    @PostMapping("/reject")
+    fun reject(@RequestBody @Valid param: RejectParameter): Mono<RejectResponse> {
+        return ReactiveSecurityContextHolder.getContext()
+                .map {
+                    (it.authentication.principal as UserSession).roomId
+                }
+                .switchIfEmpty(Mono.error(BusinessException("no session information")))
+                .flatMap { roomId ->
+                    gameMasterService.reject(param.userId, roomId)
+                }
+                .then(Mono.just(RejectResponse()))
     }
 }

@@ -73,6 +73,7 @@
                             const result = handler(e, "approved");
                             document.getElementById("token-text").value = result.token
                         }, false);
+                        evtSource.addEventListener("REJECT", (e) => handler(e, "reject"), false);
                     })
                 })
         });

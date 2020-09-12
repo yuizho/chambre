@@ -23,6 +23,7 @@
     <input type="text" id="user-id-text" value="">
     <input type="text" id="user-name-text" value="">
     <button id="approve-button">approve</button>
+    <button id="reject-button">reject</button>
     <div id="auth-token"></div>
 </div>
 
@@ -87,6 +88,21 @@
                 });
             })
         })
+
+        document.querySelector("#reject-button").addEventListener('click', () => {
+            const userId = document.getElementById("user-id-text").value;
+            fetch("/gm/reject", {
+                method: "POST",
+                credentials: 'same-origin',
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    [csrfHeaderName]: csrfToken
+                },
+                body: JSON.stringify({
+                    userId: userId
+                })
+            })
+        });
     }
 </script>
 </body>
