@@ -17,19 +17,30 @@ class EventPublisherImpl(
         private val objectMapper: ObjectMapper
 ) : EventPublisher {
     override fun publish(event: Event<*>): Mono<Boolean> {
-        return reactiveRedisOperations.opsForStream<String, Event<*>>()
-                .add(MapRecord.create(
-                        event.id.getIdIdWithSchemaPrefix(),
-                        mapOf(
-                                "to" to objectMapper.writeValueAsString(event.to),
-                                "eventType" to event.getEventName(),
-                                "payload" to objectMapper.writeValueAsString(event.payload)
-                        )
-                )).flatMap {
-                    reactiveRedisOperations.expire(
+        return Mono.fromCallable {
+            objectMapper.writeValueAsString(event.to)
+        }.flatMap { to ->
+            Mono.fromCallable {
+                objectMapper.writeValueAsString(event.payload)
+            }.map { payload ->
+                Pair(to, payload)
+            }
+        }.flatMap { (to, payload) ->
+            reactiveRedisOperations.opsForStream<String, Event<*>>()
+                    .add(MapRecord.create(
                             event.id.getIdIdWithSchemaPrefix(),
-                            Duration.ofSeconds(redisProperties.expireSec)
-                    )
-                }
+                            mapOf(
+                                    "to" to to,
+                                    "eventType" to event.getEventName(),
+                                    "payload" to payload
+                            )
+                    )).flatMap {
+                        reactiveRedisOperations.expire(
+                                event.id.getIdIdWithSchemaPrefix(),
+                                Duration.ofSeconds(redisProperties.expireSec)
+                        )
+                    }
+        }
+
     }
 }

@@ -40,18 +40,22 @@ class ReactiveUnapprovedUserRepositoryRedis(
     }
 
     override fun put(roomId: Room.Id, unapprovedUser: UnapprovedUser): Mono<Boolean> {
-        return redisOperations
-                .opsForHash<String, String>()
-                .put(
-                        UnapprovedUser.createSchemaPrefix(roomId),
-                        unapprovedUser.id,
-                        objectMapper.writeValueAsString(unapprovedUser)
-                ).flatMap {
-                    redisOperations.expire(
+        return Mono.fromCallable {
+            objectMapper.writeValueAsString(unapprovedUser)
+        }.flatMap { serializedUnapprovedUser ->
+            redisOperations
+                    .opsForHash<String, String>()
+                    .put(
                             UnapprovedUser.createSchemaPrefix(roomId),
-                            Duration.ofSeconds(redisProperties.expireSec)
-                    )
-                }
+                            unapprovedUser.id,
+                            serializedUnapprovedUser
+                    ).flatMap {
+                        redisOperations.expire(
+                                UnapprovedUser.createSchemaPrefix(roomId),
+                                Duration.ofSeconds(redisProperties.expireSec)
+                        )
+                    }
+        }
     }
 
     override fun remove(roomId: Room.Id, userId: String): Mono<Boolean> {
