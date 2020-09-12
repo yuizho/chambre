@@ -15,9 +15,9 @@ import javax.validation.Valid
 class UserController(
         private val userService: UserService
 ) {
-    @PostMapping("/entry")
-    fun entry(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
-        return userService.entry(
+    @PostMapping("/apply")
+    fun apply(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
+        return userService.apply(
                 param.roomId,
                 param.roomKey,
                 param.userName
