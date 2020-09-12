@@ -26,8 +26,8 @@ class EventSubscribeController(
         return eventSubscribeService.subscribe(roomId, userId)
                 .map { event ->
                     ServerSentEvent
-                            .builder(event.second)
-                            .event(event.first)
+                            .builder(event.payload)
+                            .event(event.name)
                             .build()
                 }
     }
@@ -43,8 +43,8 @@ class EventSubscribeController(
                     eventSubscribeService.subscribe(roomId, user.userId)
                             .map { event ->
                                 ServerSentEvent
-                                        .builder(event.second)
-                                        .event(event.first)
+                                        .builder(event.payload)
+                                        .event(event.name)
                                         .build()
                             }
                 }
