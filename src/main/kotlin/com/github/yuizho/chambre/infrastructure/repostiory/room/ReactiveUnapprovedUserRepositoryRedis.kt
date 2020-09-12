@@ -33,6 +33,12 @@ class ReactiveUnapprovedUserRepositoryRedis(
                 }
     }
 
+    override fun contains(roomId: Room.Id, userId: String): Mono<Boolean> {
+        return redisOperations
+                .opsForHash<String, String>()
+                .hasKey(UnapprovedUser.createSchemaPrefix(roomId), userId)
+    }
+
     override fun put(roomId: Room.Id, unapprovedUser: UnapprovedUser): Mono<Boolean> {
         return redisOperations
                 .opsForHash<String, String>()
