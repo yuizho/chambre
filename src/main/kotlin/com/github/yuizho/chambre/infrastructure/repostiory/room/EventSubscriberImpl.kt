@@ -25,7 +25,7 @@ class EventSubscriberImpl(
                             id,
                             objectMapper.readValue(
                                     it.value["to"]!!,
-                                    object : TypeReference<Set<User>>() {}
+                                    object : TypeReference<Set<User.Id>>() {}
                             ),
                             it.value["eventType"]!!,
                             it.value["payload"]!!

@@ -40,7 +40,7 @@ class UserService(
                 .flatMap { (room, _) ->
                     Flux.merge(
                             reactiveUnapprovedUserRepository.put(roomId, newUser),
-                            newUser.apply(eventPublisher, roomId, setOf(room.adminUser()))
+                            newUser.apply(eventPublisher, roomId, setOf(room.adminUser().id))
                     ).then(Mono.just(userId))
                 }
     }

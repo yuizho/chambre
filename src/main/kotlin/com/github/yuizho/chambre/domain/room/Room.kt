@@ -84,12 +84,12 @@ data class Room @JsonCreator constructor(
         return Flux.merge(
                 publisher.publish(UserApprovedEvent(
                         Event.Id.from(id.getIdIdWithSchemaPrefix()),
-                        setOf(user),
+                        setOf(user.id),
                         UserApprovedPayload(authToken)
                 )),
                 publisher.publish(JoinedEvent(
                         Event.Id.from(id.getIdIdWithSchemaPrefix()),
-                        users,
+                        users.map { it.id }.toSet(),
                         JoinedPayload(user.id.value, user.name)
                 ))
         ).log().then(Mono.just(authToken))

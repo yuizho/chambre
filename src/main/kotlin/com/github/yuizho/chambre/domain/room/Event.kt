@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 
 interface Event<T> {
     val id: Id
-    val to: Set<User>
+    val to: Set<User.Id>
     val payload: T
 
     fun getEventName(): String

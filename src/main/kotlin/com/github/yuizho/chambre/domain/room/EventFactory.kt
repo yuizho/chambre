@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 class EventFactory(
         val objectMapper: ObjectMapper
 ) {
-    fun getEvent(id: Event.Id, to: Set<User>, eventType: String, payload: String): Event<*> {
+    fun getEvent(id: Event.Id, to: Set<User.Id>, eventType: String, payload: String): Event<*> {
         return when (eventType) {
             AppliedEvent.EVENT_TYPE -> {
                 AppliedEvent(

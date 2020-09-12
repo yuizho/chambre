@@ -55,8 +55,7 @@ class GameMasterService(
                             unapprovedUserRepository.remove(roomId, userId),
                             eventPublisher.publish(RejectedEvent(
                                     Event.Id.from(roomId.getIdIdWithSchemaPrefix()),
-                                    // TODO: just need userId
-                                    setOf(User(User.Id(userId), "", Role.NORMAL))
+                                    setOf(User.Id(userId))
                             ))
                     ).then()
                 }

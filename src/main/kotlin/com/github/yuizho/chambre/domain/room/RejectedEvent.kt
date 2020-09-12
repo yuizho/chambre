@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 
 data class RejectedEvent @JsonCreator constructor(
         override val id: Event.Id,
-        override val to: Set<User>,
+        override val to: Set<User.Id>,
         override val payload: RejectedPayload = RejectedPayload()
 ) : Event<RejectedPayload> {
     companion object {

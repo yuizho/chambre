@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class JoinedEvent @JsonCreator constructor(
         override val id: Event.Id,
-        override val to: Set<User>,
+        override val to: Set<User.Id>,
         override val payload: JoinedPayload
 ) : Event<JoinedPayload> {
     companion object {

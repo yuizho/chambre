@@ -16,7 +16,7 @@ data class UnapprovedUser @JsonCreator constructor(
         }
     }
 
-    fun apply(publisher: EventPublisher, roomId: Room.Id, to: Set<User>): Mono<Boolean> {
+    fun apply(publisher: EventPublisher, roomId: Room.Id, to: Set<User.Id>): Mono<Boolean> {
         return publisher.publish(
                 AppliedEvent(
                         Event.Id.from(roomId.getIdIdWithSchemaPrefix()),
