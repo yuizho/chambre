@@ -7,6 +7,7 @@ import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.domain.room.UnapprovedUser
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Duration
 
@@ -23,6 +24,15 @@ class ReactiveUnapprovedUserRepositoryRedis(
                 .map { objectMapper.readValue(it, UnapprovedUser::class.java) }
     }
 
+    override fun findUnapprovedUsers(roomId: Room.Id): Flux<UnapprovedUser> {
+        return redisOperations
+                .opsForHash<String, String>()
+                .values(UnapprovedUser.createSchemaPrefix(roomId))
+                .map { value ->
+                    objectMapper.readValue(value, UnapprovedUser::class.java)
+                }
+    }
+
     override fun put(roomId: Room.Id, unapprovedUser: UnapprovedUser): Mono<Boolean> {
         return redisOperations
                 .opsForHash<String, String>()
@@ -36,12 +46,6 @@ class ReactiveUnapprovedUserRepositoryRedis(
                             Duration.ofSeconds(redisProperties.expireSec)
                     )
                 }
-    }
-
-    override fun contains(roomId: Room.Id, userId: String): Mono<Boolean> {
-        return redisOperations
-                .opsForHash<String, String>()
-                .hasKey(UnapprovedUser.createSchemaPrefix(roomId), userId)
     }
 
     override fun remove(roomId: Room.Id, userId: String): Mono<Boolean> {

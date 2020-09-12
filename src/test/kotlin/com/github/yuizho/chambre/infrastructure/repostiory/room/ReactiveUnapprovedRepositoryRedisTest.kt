@@ -59,23 +59,29 @@ class ReactiveUnapprovedRepositoryRedisTest {
     }
 
     @Test
-    fun `contains returns true when the date is registered`() {
+    fun `fetch unapprovedUsers`() {
         // given
-        val expected = UnapprovedUser("1", "userA")
+        val expected = listOf(
+                UnapprovedUser("1", "userA"), UnapprovedUser("2", "userB")
+        )
         val roomId = Room.Id.from("3")
 
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .hset(
                         UnapprovedUser.createSchemaPrefix(roomId),
-                        mapOf(expected.id to ObjectMapper().writeValueAsString(expected))
+                        mapOf(
+                                expected[0].id to ObjectMapper().writeValueAsString(expected[0]),
+                                expected[1].id to ObjectMapper().writeValueAsString(expected[1])
+                        )
                 )
 
         // when
-        val actual = reactiveUnapprovedUserRepositoryRedis.contains(roomId, expected.id)
+        val actual = reactiveUnapprovedUserRepositoryRedis.findUnapprovedUsers(roomId)
 
         // then
         StepVerifier.create(actual)
-                .expectNext(true)
+                .expectNext(expected[0])
+                .expectNext(expected[1])
                 .verifyComplete()
     }
 

@@ -25,19 +25,19 @@ class UserService(
                     }
                 }
                 .flatMap { room ->
-                    reactiveUnapprovedUserRepository.contains(roomId, userId)
+                    reactiveUnapprovedUserRepository.findUnapprovedUsers(roomId)
+                            .any { it.name == userName }
                             .map { joined -> Pair<Room, Boolean>(room, joined) }
                 }
-                .doOnNext { pair ->
-                    // TODO: ココでuserNameの重複有無のみをチェック (なので検索はroomIdのみで検索する感じ)
-                    if (pair.second) {
+                .doOnNext { (_, duplicateUserName) ->
+                    if (duplicateUserName) {
                         throw BusinessException("you have already joined this room.")
                     }
                 }
-                .flatMap { pair ->
+                .flatMap { (room, _) ->
                     // TODO: ココでuserIdをGenerateする
                     reactiveUnapprovedUserRepository.put(roomId, newUser)
-                            .map { pair.first }
+                            .map { room }
                 }
                 .flatMap { room ->
                     newUser.apply(eventPublisher, roomId, setOf(room.adminUser()))
