@@ -23,9 +23,7 @@ class GameMasterService(
                         reactiveRoomRepository.save(room)
                                 .map { Pair(room, token) }
                     }
-        }.map { (room, token) ->
-            Triple(user, room, token)
-        }.flatMap { (user, room, token) ->
+        }.flatMap { (room, token) ->
             // save auth info
             participantRepository
                     .save(Participant(
