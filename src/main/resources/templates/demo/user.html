@@ -27,6 +27,11 @@
     <div th:text="${context}"></div>
 </div>
 
+<h2>start auth sse</h2>
+<div>
+    <button id="sse-button">start auth sse</button>
+</div>
+
 <h2>sse notification</h2>
 <ul id="list"></ul>
 
@@ -86,6 +91,20 @@
                 console.log(data)
                 location.reload()
             })
+        });
+
+        document.querySelector("#sse-button").addEventListener('click', (e) => {
+            const eventList = document.getElementById("list");
+            const evtSource = new EventSource(`/subscribe/approved?roomId=1`);
+            const handler = (e, event) => {
+                const newElement = document.createElement("li");
+                newElement.innerHTML = `${event}: ${e.data}`
+                eventList.appendChild(newElement);
+                return JSON.parse(e.data);
+            };
+            evtSource.addEventListener("APPLY", (e) => handler(e, "apply"), false);
+            evtSource.addEventListener("JOIN", (e) => handler(e, "join"), false);
+            e.target.setAttribute("disabled", "disabled");
         });
     }
 </script>

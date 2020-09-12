@@ -58,7 +58,7 @@
             };
             evtSource.addEventListener("APPLY",
                 (e) => {
-                    const result = handler(e, "entry");
+                    const result = handler(e, "apply");
                     document.getElementById("user-id-text").value = result.id;
                     document.getElementById("user-name-text").value = result.name;
                 }, false);
