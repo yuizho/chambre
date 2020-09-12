@@ -29,34 +29,33 @@ class GmController(
     fun approve(@RequestBody @Valid param: ApproveParamter): Mono<ApproveResponse> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
-                    val us = it.authentication.principal as UserSession
                     Pair(
                             User(param.userId, param.userName, Role.NORMAL),
-                            us.roomId
+                            (it.authentication.principal as UserSession).roomId
                     )
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
-                .flatMap {
+                .flatMap { (user, roomId) ->
                     // add user to the room
-                    reactiveRoomRepository.findRoomBy(it.second).flatMap { r ->
-                        r.approve(eventPublisher, it.first)
+                    reactiveRoomRepository.findRoomBy(roomId).flatMap { r ->
+                        r.approve(eventPublisher, user)
                                 .flatMap { token ->
                                     reactiveRoomRepository.save(r)
                                             .map { Pair(r, token) }
                                 }
-                    }.map { p ->
-                        Triple(it.first, p.first, p.second)
+                    }.map { (room, token) ->
+                        Triple(user, room, token)
                     }
                 }
-                .flatMap {
+                .flatMap { (user, room, token) ->
                     // save auth info
                     participantRepository
                             .save(Participant(
-                                    Participant.Id.from(it.third),
-                                    it.second.id.getIdIdWithSchemaPrefix(),
-                                    it.first.id
+                                    Participant.Id.from(token),
+                                    room.id.getIdIdWithSchemaPrefix(),
+                                    user.id
                             ))
-                            .map { _ -> it.third }
+                            .map { token }
                 }
                 .then(Mono.just(ApproveResponse()))
 
