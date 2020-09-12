@@ -27,7 +27,7 @@ class GameMasterController(
         return ReactiveSecurityContextHolder.getContext()
                 .map {
                     Pair(
-                            User(param.userId, param.userName, Role.NORMAL),
+                            User(User.Id(param.userId), param.userName, Role.NORMAL),
                             (it.authentication.principal as UserSession).roomId
                     )
                 }

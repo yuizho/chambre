@@ -14,7 +14,7 @@ class EventSubscribeService(
     fun subscribe(roomId: String, userId: String): Flux<Pair<String, String>> {
         return eventSubscriber.subscribe(Room.Id.from(roomId))
                 .filter {
-                    it.to.any { user -> user.id == userId }
+                    it.to.any { user -> user.id.value == userId }
                 }
                 .map {
                     Pair(it.getEventName(), objectMapper.writeValueAsString(it.payload))

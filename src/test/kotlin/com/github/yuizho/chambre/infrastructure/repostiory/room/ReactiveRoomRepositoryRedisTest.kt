@@ -31,8 +31,8 @@ class ReactiveRoomRepositoryRedisTest {
                 "1",
                 Room.Status.OPENED,
                 mutableSetOf(
-                        User("1", "foo", Role.ADMIN),
-                        User("2", "bar", Role.NORMAL)
+                        User(User.Id("1"), "foo", Role.ADMIN),
+                        User(User.Id("2"), "bar", Role.NORMAL)
                 )
         )
 
@@ -61,8 +61,8 @@ class ReactiveRoomRepositoryRedisTest {
                 "1",
                 Room.Status.OPENED,
                 mutableSetOf(
-                        User("1", "foo", Role.ADMIN),
-                        User("2", "bar", Role.NORMAL)
+                        User(User.Id("1"), "foo", Role.ADMIN),
+                        User(User.Id("2"), "bar", Role.NORMAL)
                 )
         )
 

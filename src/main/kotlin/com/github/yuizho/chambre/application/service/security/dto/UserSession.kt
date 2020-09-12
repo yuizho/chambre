@@ -16,5 +16,5 @@ data class UserSession @JsonCreator constructor(
         @param:JsonProperty("role")
         val role: Role
 ) {
-    constructor(roomId: Room.Id, user: User) : this(roomId, user.id, user.name, user.role)
+    constructor(roomId: Room.Id, user: User) : this(roomId, user.id.value, user.name, user.role)
 }

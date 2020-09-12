@@ -20,9 +20,8 @@ class ReactiveRoomUserServiceImpl(
                 .flatMap { ac ->
                     reactiveRoomRepository.findRoomBy(Room.Id.fromIdWithSchemaPrefix(ac.roomId))
                             .map { r -> Pair(ac.userId, r) }
-                }.map { p ->
-                    val room = p.second
-                    val user = room.users.find { u -> u.id == p.first }
+                }.map { (userId, room) ->
+                    val user = room.users.find { u -> u.id.value == userId }
                             ?: throw IllegalStateException("there is no expected user.")
                     UserSession(room.id, user)
                 }

@@ -7,12 +7,17 @@ import org.springframework.security.core.GrantedAuthority
 
 data class User @JsonCreator constructor(
         @param:JsonProperty("id")
-        val id: String,
+        val id: Id,
         @param:JsonProperty("name")
         val name: String,
         @param:JsonProperty("role")
         val role: Role
 ) {
+    data class Id @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor(
+            @field:JsonValue
+            val value: String
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

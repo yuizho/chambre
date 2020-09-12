@@ -16,7 +16,7 @@ class GameMasterService(
         private val eventPublisher: EventPublisher
 ) {
     fun approve(user: User, roomId: Room.Id): Mono<String> {
-        return unapprovedUserRepository.contains(roomId, user.id)
+        return unapprovedUserRepository.contains(roomId, user.id.value)
                 .doOnNext { contained ->
                     if (!contained) {
                         throw BusinessException("the user you try to approve has not applied.")
@@ -36,7 +36,7 @@ class GameMasterService(
                                 .save(Participant(
                                         Participant.Id.from(token),
                                         room.id.getIdIdWithSchemaPrefix(),
-                                        user.id
+                                        user.id.value
                                 ))
                                 .map { token }
                     }
@@ -56,7 +56,7 @@ class GameMasterService(
                             eventPublisher.publish(RejectedEvent(
                                     Event.Id.from(roomId.getIdIdWithSchemaPrefix()),
                                     // TODO: just need userId
-                                    setOf(User(userId, "", Role.NORMAL))
+                                    setOf(User(User.Id(userId), "", Role.NORMAL))
                             ))
                     ).then()
                 }
