@@ -18,6 +18,10 @@
     <button id="sse-button">start sse</button>
 </div>
 
+<h2>users</h2>
+<button id="users-button">users</button>
+<div id="users-div"></div>
+
 <h2>approve user</h2>
 <div>
     <input type="text" id="user-id-text" value="">
@@ -66,6 +70,22 @@
             evtSource.addEventListener("JOIN", (e) => handler(e, "join"), false);
             e.target.setAttribute("disabled", "disabled");
         });
+
+        document.querySelector("#users-button").addEventListener('click', () => {
+            fetch("/api/room/users", {
+                method: "GET",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;"
+                }
+            }).then(data => data.body.getReader())
+                .then(reader => {
+                    reader.read().then(({done, value}) => {
+                        const json = new TextDecoder().decode(value)
+                        document.getElementById("users-div").textContent = json
+                    })
+                })
+        })
 
         document.querySelector("#approve-button").addEventListener('click', () => {
             const userId = document.getElementById("user-id-text").value;
