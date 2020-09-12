@@ -3,6 +3,7 @@ package com.github.yuizho.chambre.application.service.room
 import com.github.yuizho.chambre.domain.room.*
 import com.github.yuizho.chambre.exception.BusinessException
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -37,12 +38,10 @@ class UserService(
                     }
                 }
                 .flatMap { (room, _) ->
-                    reactiveUnapprovedUserRepository.put(roomId, newUser)
-                            .map { room }
+                    Flux.merge(
+                            reactiveUnapprovedUserRepository.put(roomId, newUser),
+                            newUser.apply(eventPublisher, roomId, setOf(room.adminUser()))
+                    ).then(Mono.just(userId))
                 }
-                .flatMap { room ->
-                    newUser.apply(eventPublisher, roomId, setOf(room.adminUser()))
-                }
-                .then(Mono.just(userId))
     }
 }
