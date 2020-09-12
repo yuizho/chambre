@@ -20,9 +20,22 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import org.springframework.web.server.WebFilter
 
 @Configuration
+class SecurityConfig : SecurityConfigAdapter() {
+    override fun configureSpecifiedExchangeSpec(authorizeExchangeSpec: ServerHttpSecurity.AuthorizeExchangeSpec)
+            : ServerHttpSecurity.AuthorizeExchangeSpec {
+        return authorizeExchangeSpec
+                .pathMatchers("/auth").permitAll()
+                .pathMatchers("/api/subscribe/unapproved").permitAll()
+                .pathMatchers("/api/user/apply").permitAll()
+                .pathMatchers("/api/gm/**").hasAuthority(Role.ADMIN.name)
+    }
+}
+
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @EnableWebFluxSecurity
-class SecurityConfig {
+abstract class SecurityConfigAdapter {
+    abstract fun configureSpecifiedExchangeSpec(authorizeExchangeSpec: ServerHttpSecurity.AuthorizeExchangeSpec): ServerHttpSecurity.AuthorizeExchangeSpec
+
     @Bean
     fun securityFilterChain(
             http: ServerHttpSecurity,
@@ -41,13 +54,8 @@ class SecurityConfig {
                         ),
                         SecurityWebFiltersOrder.AUTHENTICATION
                 )
-                // configure endpoints
                 .authorizeExchange()
-                .pathMatchers("/demo/**").permitAll()
-                .pathMatchers("/auth").permitAll()
-                .pathMatchers("/api/subscribe/unapproved").permitAll()
-                .pathMatchers("/api/user/apply").permitAll()
-                .pathMatchers("/api/gm/**").hasAuthority(Role.ADMIN.name)
+                .let { configureSpecifiedExchangeSpec(it) }
                 .anyExchange().authenticated()
                 .and()
                 .build()
