@@ -18,7 +18,7 @@ class RoomController(
     fun users(): Mono<UsersResponse> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
-                    (it.authentication.principal as UserSession).roomId
+                    (it.authentication.principal as UserSession).getTypedRoomId()
                 }.flatMap { roomId ->
                     roomService.users(roomId)
                 }.map { users ->

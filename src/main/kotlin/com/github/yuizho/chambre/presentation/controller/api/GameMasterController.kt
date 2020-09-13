@@ -28,7 +28,7 @@ class GameMasterController(
                 .map {
                     Pair(
                             User(User.Id(param.userId), param.userName, Role.NORMAL),
-                            (it.authentication.principal as UserSession).roomId
+                            (it.authentication.principal as UserSession).getTypedRoomId()
                     )
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
@@ -43,7 +43,7 @@ class GameMasterController(
     fun reject(@RequestBody @Valid param: RejectParameter): Mono<RejectResponse> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
-                    (it.authentication.principal as UserSession).roomId
+                    (it.authentication.principal as UserSession).getTypedRoomId()
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMap { roomId ->
