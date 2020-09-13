@@ -33,14 +33,14 @@ class EventSubscribeController(
     }
 
     @GetMapping("/approved")
-    fun subscribe(@RequestParam("roomId") roomId: String): Flux<ServerSentEvent<String>> {
+    fun subscribe(): Flux<ServerSentEvent<String>> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
                     it.authentication.principal as UserSession
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
-                .flatMapMany { user ->
-                    eventSubscribeService.subscribe(roomId, user.userId)
+                .flatMapMany { userSession ->
+                    eventSubscribeService.subscribe(userSession.getTypedRoomId().id, userSession.userId)
                             .map { event ->
                                 ServerSentEvent
                                         .builder(event.payload)
