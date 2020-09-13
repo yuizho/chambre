@@ -90,13 +90,13 @@
                 eventList.appendChild(newElement);
                 return JSON.parse(e.data);
             };
-            evtSource.addEventListener("APPLY",
+            evtSource.addEventListener("APPLIED",
                 (e) => {
-                    const result = handler(e, "apply");
+                    const result = handler(e, "applied");
                     document.getElementById("user-id-text").value = result.id;
                     document.getElementById("user-name-text").value = result.name;
                 }, false);
-            evtSource.addEventListener("JOIN", (e) => handler(e, "join"), false);
+            evtSource.addEventListener("JOINED", (e) => handler(e, "joined"), false);
             e.target.setAttribute("disabled", "disabled");
         });
 

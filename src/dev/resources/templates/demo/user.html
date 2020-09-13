@@ -73,7 +73,7 @@
                             const result = handler(e, "approved");
                             document.getElementById("token-text").value = result.token
                         }, false);
-                        evtSource.addEventListener("REJECT", (e) => handler(e, "reject"), false);
+                        evtSource.addEventListener("REJECTED", (e) => handler(e, "rejected"), false);
                     })
                 })
         });
@@ -103,8 +103,8 @@
                 eventList.appendChild(newElement);
                 return JSON.parse(e.data);
             };
-            evtSource.addEventListener("APPLY", (e) => handler(e, "apply"), false);
-            evtSource.addEventListener("JOIN", (e) => handler(e, "join"), false);
+            evtSource.addEventListener("APPLIED", (e) => handler(e, "applied"), false);
+            evtSource.addEventListener("JOINED", (e) => handler(e, "joined"), false);
             e.target.setAttribute("disabled", "disabled");
         });
     }

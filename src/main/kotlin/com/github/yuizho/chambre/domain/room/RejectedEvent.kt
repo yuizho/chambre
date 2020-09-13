@@ -8,7 +8,7 @@ data class RejectedEvent @JsonCreator constructor(
         override val payload: RejectedPayload = RejectedPayload()
 ) : Event<RejectedPayload> {
     companion object {
-        const val EVENT_TYPE = "REJECT"
+        const val EVENT_TYPE = "REJECTED"
     }
 
     override fun getEventName(): String {

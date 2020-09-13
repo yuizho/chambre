@@ -9,7 +9,7 @@ data class AppliedEvent @JsonCreator constructor(
         override val payload: AppliedPayload
 ) : Event<AppliedPayload> {
     companion object {
-        const val EVENT_TYPE = "APPLY"
+        const val EVENT_TYPE = "APPLIED"
     }
 
     override fun getEventName(): String {
