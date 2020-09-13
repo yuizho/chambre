@@ -5,17 +5,23 @@
     <title>Title</title>
 </head>
 <body>
+<h2>create room</h2>
+<div>
+    <label for="gm-name-text">userName: </label>
+    <input type="text" id="gm-name-text" value="gmA">
+    <label for="room-name-text">roomName: </label>
+    <input type="text" id="room-name-text" value="roomA">
+    <button id="create-button">create</button>
+</div>
+<div id="create-result-div"></div>
+
 <h2>auth</h2>
 <div>
     <label for="token-text">Auth Token: </label>
     <input type="text" id="token-text" value="hogehoge">
     <button id="auth-button">auth</button>
-    <div th:text="${context}"></div>
-</div>
-
-<h2>start sse</h2>
-<div>
     <button id="sse-button">start sse</button>
+    <div th:text="${context}"></div>
 </div>
 
 <h2>users</h2>
@@ -37,6 +43,29 @@
     {
         const csrfHeaderName = /*[[${_csrf.headerName}]]*/ "";
         const csrfToken = /*[[${_csrf.token}]]*/ "";
+        document.querySelector("#create-button").addEventListener('click', () => {
+            const userName = document.getElementById("gm-name-text").value
+            const roomName = document.getElementById("room-name-text").value
+            fetch("/api/room/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json;",
+                    [csrfHeaderName]: csrfToken
+                },
+                body: JSON.stringify({
+                    roomName: roomName,
+                    userName: userName
+                })
+            }).then(data => data.body.getReader())
+                .then(reader => {
+                    reader.read().then(({done, value}) => {
+                        const json = new TextDecoder().decode(value)
+                        document.getElementById("create-result-div").textContent = json
+                        document.getElementById("token-text").value = JSON.parse(json).authToken
+                    })
+                })
+        })
+
         document.querySelector("#auth-button").addEventListener('click', () => {
             fetch("/auth", {
                 method: "POST",

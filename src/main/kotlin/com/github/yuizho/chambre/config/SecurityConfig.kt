@@ -25,6 +25,7 @@ class SecurityConfig : SecurityConfigAdapter() {
             : ServerHttpSecurity.AuthorizeExchangeSpec {
         return authorizeExchangeSpec
                 .pathMatchers("/auth").permitAll()
+                .pathMatchers("/api/room/create").permitAll()
                 .pathMatchers("/api/subscribe/unapproved").permitAll()
                 .pathMatchers("/api/user/apply").permitAll()
                 .pathMatchers("/api/gm/**").hasAuthority(Role.ADMIN.name)
