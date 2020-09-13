@@ -1,6 +1,7 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
 import com.github.yuizho.chambre.application.service.room.UserService
+import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryParameter
 import com.github.yuizho.chambre.presentation.controller.api.dto.EntryResponse
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,7 +19,7 @@ class UserController(
     @PostMapping("/apply")
     fun apply(@RequestBody @Valid param: EntryParameter): Mono<EntryResponse> {
         return userService.apply(
-                param.roomId,
+                Room.Id.from(param.roomId),
                 param.roomKey,
                 param.userName
         ).map { userId ->

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuizho.chambre.application.service.room.dto.EventMessage
 import com.github.yuizho.chambre.domain.room.EventSubscriber
 import com.github.yuizho.chambre.domain.room.Room
+import com.github.yuizho.chambre.domain.room.User
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 
@@ -12,10 +13,10 @@ class EventSubscribeService(
         private val eventSubscriber: EventSubscriber,
         private val objectMapper: ObjectMapper
 ) {
-    fun subscribe(roomId: String, userId: String): Flux<EventMessage> {
-        return eventSubscriber.subscribe(Room.Id.from(roomId))
+    fun subscribe(roomId: Room.Id, userId: User.Id): Flux<EventMessage> {
+        return eventSubscriber.subscribe(roomId)
                 .filter {
-                    it.to.any { id -> id.value == userId }
+                    it.to.any { id -> id == userId }
                 }
                 .map {
                     EventMessage(

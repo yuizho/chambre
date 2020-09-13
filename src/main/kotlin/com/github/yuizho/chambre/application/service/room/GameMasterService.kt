@@ -43,8 +43,8 @@ class GameMasterService(
                 }
     }
 
-    fun reject(userId: String, roomId: Room.Id): Mono<Void> {
-        return unapprovedUserRepository.contains(roomId, userId)
+    fun reject(userId: User.Id, roomId: Room.Id): Mono<Void> {
+        return unapprovedUserRepository.contains(roomId, userId.value)
                 .doOnNext { contained ->
                     if (!contained) {
                         throw BusinessException("the user you try to reject has not applied.")
@@ -52,10 +52,10 @@ class GameMasterService(
                 }
                 .flatMap {
                     Flux.merge(
-                            unapprovedUserRepository.remove(roomId, userId),
+                            unapprovedUserRepository.remove(roomId, userId.value),
                             eventPublisher.publish(RejectedEvent(
                                     Event.Id.from(roomId.getIdIdWithSchemaPrefix()),
-                                    setOf(User.Id(userId))
+                                    setOf(userId)
                             ))
                     ).then()
                 }

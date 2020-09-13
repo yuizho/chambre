@@ -13,8 +13,7 @@ class UserService(
         private val reactiveUnapprovedUserRepository: ReactiveUnapprovedUserRepository,
         private val eventPublisher: EventPublisher
 ) {
-    fun apply(roomId: String, roomKey: String, userName: String): Mono<String> {
-        val roomId = Room.Id.from(roomId)
+    fun apply(roomId: Room.Id, roomKey: String, userName: String): Mono<String> {
         val userId = UUID.randomUUID().toString()
         val newUser = UnapprovedUser(
                 userId,

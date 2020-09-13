@@ -47,7 +47,7 @@ class GameMasterController(
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMap { roomId ->
-                    gameMasterService.reject(param.userId, roomId)
+                    gameMasterService.reject(User.Id(param.userId), roomId)
                 }
                 .then(Mono.just(RejectResponse()))
     }

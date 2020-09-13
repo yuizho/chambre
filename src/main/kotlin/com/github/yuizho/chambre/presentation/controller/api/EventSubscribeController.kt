@@ -2,6 +2,8 @@ package com.github.yuizho.chambre.presentation.controller.api
 
 import com.github.yuizho.chambre.application.service.room.EventSubscribeService
 import com.github.yuizho.chambre.application.service.security.dto.UserSession
+import com.github.yuizho.chambre.domain.room.Room
+import com.github.yuizho.chambre.domain.room.User
 import com.github.yuizho.chambre.exception.BusinessException
 import org.springframework.http.codec.ServerSentEvent
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
@@ -23,7 +25,7 @@ class EventSubscribeController(
             @RequestParam("userId") userId: String
 
     ): Flux<ServerSentEvent<String>> {
-        return eventSubscribeService.subscribe(roomId, userId)
+        return eventSubscribeService.subscribe(Room.Id.from(roomId), User.Id(userId))
                 .map { event ->
                     ServerSentEvent
                             .builder(event.payload)
@@ -40,7 +42,7 @@ class EventSubscribeController(
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMapMany { userSession ->
-                    eventSubscribeService.subscribe(userSession.getTypedRoomId().id, userSession.userId)
+                    eventSubscribeService.subscribe(userSession.getTypedRoomId(), userSession.getTypedUserId())
                             .map { event ->
                                 ServerSentEvent
                                         .builder(event.payload)
