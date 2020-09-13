@@ -3,7 +3,7 @@ package com.github.yuizho.chambre.presentation.controller.api.dto
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
-data class EntryParameter(
+data class ApplyParameter(
         @field:NotNull
         @field:Size(min = 1, max = 36)
         val roomId: String,
@@ -15,6 +15,6 @@ data class EntryParameter(
         val userName: String
 )
 
-data class EntryResponse(
+data class ApplyResponse(
         val userId: String
 )
