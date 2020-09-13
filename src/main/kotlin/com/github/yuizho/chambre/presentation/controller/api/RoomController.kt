@@ -7,6 +7,7 @@ import com.github.yuizho.chambre.presentation.controller.api.dto.CreateResult
 import com.github.yuizho.chambre.presentation.controller.api.dto.UsersResponse
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
 import javax.validation.Valid
 
@@ -17,13 +18,15 @@ class RoomController(
 ) {
 
     @PostMapping("/create")
-    fun create(@RequestBody @Valid param: CreateParameter): Mono<CreateResult> {
+    fun create(
+            @RequestBody @Valid param: CreateParameter,
+            uriBuilder: UriComponentsBuilder
+    ): Mono<CreateResult> {
         return roomService.create(param.userName, param.roomName)
                 .map {
                     CreateResult(
                             it.room.id.id,
-                            // TODO: create URL
-                            "",
+                            uriBuilder.path("/room/${it.room.id.id}").build().toUriString(),
                             it.room.key,
                             it.authToken
                     )
