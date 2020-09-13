@@ -5,6 +5,7 @@ import com.github.yuizho.chambre.config.RedisProperties
 import com.github.yuizho.chambre.domain.room.ReactiveUnapprovedUserRepository
 import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.domain.room.UnapprovedUser
+import com.github.yuizho.chambre.domain.room.User
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
@@ -17,10 +18,10 @@ class ReactiveUnapprovedUserRepositoryRedis(
         private val redisProperties: RedisProperties,
         private val objectMapper: ObjectMapper
 ) : ReactiveUnapprovedUserRepository {
-    override fun findUnapprovedUserBy(roomId: Room.Id, userId: String): Mono<UnapprovedUser> {
+    override fun findUnapprovedUserBy(roomId: Room.Id, userId: User.Id): Mono<UnapprovedUser> {
         return redisOperations
                 .opsForHash<String, String>()
-                .get(UnapprovedUser.createSchemaPrefix(roomId), userId)
+                .get(UnapprovedUser.createSchemaPrefix(roomId), userId.value)
                 .map { objectMapper.readValue(it, UnapprovedUser::class.java) }
     }
 
@@ -33,10 +34,10 @@ class ReactiveUnapprovedUserRepositoryRedis(
                 }
     }
 
-    override fun contains(roomId: Room.Id, userId: String): Mono<Boolean> {
+    override fun contains(roomId: Room.Id, userId: User.Id): Mono<Boolean> {
         return redisOperations
                 .opsForHash<String, String>()
-                .hasKey(UnapprovedUser.createSchemaPrefix(roomId), userId)
+                .hasKey(UnapprovedUser.createSchemaPrefix(roomId), userId.value)
     }
 
     override fun put(roomId: Room.Id, unapprovedUser: UnapprovedUser): Mono<Boolean> {
@@ -47,7 +48,7 @@ class ReactiveUnapprovedUserRepositoryRedis(
                     .opsForHash<String, String>()
                     .put(
                             UnapprovedUser.createSchemaPrefix(roomId),
-                            unapprovedUser.id,
+                            unapprovedUser.id.value,
                             serializedUnapprovedUser
                     ).flatMap {
                         redisOperations.expire(
@@ -58,10 +59,10 @@ class ReactiveUnapprovedUserRepositoryRedis(
         }
     }
 
-    override fun remove(roomId: Room.Id, userId: String): Mono<Boolean> {
+    override fun remove(roomId: Room.Id, userId: User.Id): Mono<Boolean> {
         return redisOperations
                 .opsForHash<String, String>()
-                .remove(UnapprovedUser.createSchemaPrefix(roomId), userId)
+                .remove(UnapprovedUser.createSchemaPrefix(roomId), userId.value)
                 .map { it == 1L }
     }
 }

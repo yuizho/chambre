@@ -78,7 +78,7 @@ data class Room @JsonCreator constructor(
 
     fun adminUser(): User = users.first { it.role == Role.ADMIN }
 
-    fun approve(publisher: EventPublisher, user: User): Mono<String> {
+    fun approve(publisher: EventPublisher, user: UnapprovedUser): Mono<String> {
         users.add(user)
         val authToken = UUID.randomUUID().toString()
         return Flux.merge(

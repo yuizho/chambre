@@ -16,7 +16,7 @@ class UserService(
     fun apply(roomId: Room.Id, roomKey: String, userName: String): Mono<String> {
         val userId = UUID.randomUUID().toString()
         val newUser = UnapprovedUser(
-                userId,
+                User.Id(userId),
                 userName
         )
         return reactiveRoomRepository.findRoomBy(roomId)

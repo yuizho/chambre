@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import org.springframework.security.core.GrantedAuthority
 
-data class User @JsonCreator constructor(
+open class User @JsonCreator constructor(
         @param:JsonProperty("id")
         val id: Id,
         @param:JsonProperty("name")
@@ -31,6 +31,10 @@ data class User @JsonCreator constructor(
 
     override fun hashCode(): Int {
         return id.hashCode()
+    }
+
+    override fun toString(): String {
+        return "User(id=$id, name='$name', role=$role)"
     }
 }
 

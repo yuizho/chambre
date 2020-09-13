@@ -2,7 +2,7 @@ package com.github.yuizho.chambre.presentation.controller.api
 
 import com.github.yuizho.chambre.application.service.room.GameMasterService
 import com.github.yuizho.chambre.application.service.security.dto.UserSession
-import com.github.yuizho.chambre.domain.room.Role
+import com.github.yuizho.chambre.domain.room.UnapprovedUser
 import com.github.yuizho.chambre.domain.room.User
 import com.github.yuizho.chambre.exception.BusinessException
 import com.github.yuizho.chambre.presentation.controller.api.dto.ApproveParamter
@@ -27,7 +27,7 @@ class GameMasterController(
         return ReactiveSecurityContextHolder.getContext()
                 .map {
                     Pair(
-                            User(User.Id(param.userId), param.userName, Role.NORMAL),
+                            UnapprovedUser(User.Id(param.userId), param.userName),
                             (it.authentication.principal as UserSession).getTypedRoomId()
                     )
                 }

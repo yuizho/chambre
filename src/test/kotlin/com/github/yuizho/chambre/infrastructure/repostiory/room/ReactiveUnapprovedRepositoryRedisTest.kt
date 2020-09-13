@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuizho.chambre.RedisConfig
 import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.domain.room.UnapprovedUser
+import com.github.yuizho.chambre.domain.room.User
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,13 +26,13 @@ class ReactiveUnapprovedRepositoryRedisTest {
     @Test
     fun `fetch unapprovedUser`() {
         // given
-        val expected = UnapprovedUser("1", "userA")
+        val expected = UnapprovedUser(User.Id("1"), "userA")
         val roomId = Room.Id.from("1")
 
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .hset(
                         UnapprovedUser.createSchemaPrefix(roomId),
-                        mapOf(expected.id to ObjectMapper().writeValueAsString(expected))
+                        mapOf(expected.id.value to ObjectMapper().writeValueAsString(expected))
                 )
 
         // when
@@ -46,7 +47,7 @@ class ReactiveUnapprovedRepositoryRedisTest {
     @Test
     fun `save unapprovedUser`() {
         // given
-        val expected = UnapprovedUser("1", "userB")
+        val expected = UnapprovedUser(User.Id("1"), "userB")
         val roomId = Room.Id.from("2")
 
         // when
@@ -62,7 +63,7 @@ class ReactiveUnapprovedRepositoryRedisTest {
     fun `fetch unapprovedUsers`() {
         // given
         val expected = listOf(
-                UnapprovedUser("1", "userA"), UnapprovedUser("2", "userB")
+                UnapprovedUser(User.Id("1"), "userA"), UnapprovedUser(User.Id("2"), "userB")
         )
         val roomId = Room.Id.from("3")
 
@@ -70,8 +71,8 @@ class ReactiveUnapprovedRepositoryRedisTest {
                 .hset(
                         UnapprovedUser.createSchemaPrefix(roomId),
                         mapOf(
-                                expected[0].id to ObjectMapper().writeValueAsString(expected[0]),
-                                expected[1].id to ObjectMapper().writeValueAsString(expected[1])
+                                expected[0].id.value to ObjectMapper().writeValueAsString(expected[0]),
+                                expected[1].id.value to ObjectMapper().writeValueAsString(expected[1])
                         )
                 )
 
@@ -88,13 +89,13 @@ class ReactiveUnapprovedRepositoryRedisTest {
     @Test
     fun `contains returns true when the date is registered`() {
         // given
-        val expected = UnapprovedUser("1", "userA")
+        val expected = UnapprovedUser(User.Id("1"), "userA")
         val roomId = Room.Id.from("4")
 
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .hset(
                         UnapprovedUser.createSchemaPrefix(roomId),
-                        mapOf(expected.id to ObjectMapper().writeValueAsString(expected))
+                        mapOf(expected.id.value to ObjectMapper().writeValueAsString(expected))
                 )
 
         // when
@@ -109,13 +110,13 @@ class ReactiveUnapprovedRepositoryRedisTest {
     @Test
     fun `remove unapprovedUser`() {
         // given
-        val expected = UnapprovedUser("1", "userA")
+        val expected = UnapprovedUser(User.Id("1"), "userA")
         val roomId = Room.Id.from("5")
 
         Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
                 .hset(
                         UnapprovedUser.createSchemaPrefix(roomId),
-                        mapOf(expected.id to ObjectMapper().writeValueAsString(expected))
+                        mapOf(expected.id.value to ObjectMapper().writeValueAsString(expected))
                 )
 
         // when
@@ -126,7 +127,7 @@ class ReactiveUnapprovedRepositoryRedisTest {
                 .expectNext(true)
                 .verifyComplete()
         val registeredValue = Jedis(redis.getHost(), RedisConfig.REDIS_PORT)
-                .hget(UnapprovedUser.createSchemaPrefix(roomId), expected.id)
+                .hget(UnapprovedUser.createSchemaPrefix(roomId), expected.id.value)
         assertThat(registeredValue).isNull()
     }
 }
