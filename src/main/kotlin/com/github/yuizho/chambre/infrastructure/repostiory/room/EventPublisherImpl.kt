@@ -8,6 +8,7 @@ import org.springframework.data.redis.connection.stream.MapRecord
 import org.springframework.data.redis.core.ReactiveRedisOperations
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 import java.time.Duration
 
 @Repository
@@ -19,10 +20,10 @@ class EventPublisherImpl(
     override fun publish(event: Event<*>): Mono<Boolean> {
         return Mono.fromCallable {
             objectMapper.writeValueAsString(event.to)
-        }.flatMap { to ->
+        }.subscribeOn(Schedulers.boundedElastic()).flatMap { to ->
             Mono.fromCallable {
                 objectMapper.writeValueAsString(event.payload)
-            }.map { payload ->
+            }.subscribeOn(Schedulers.boundedElastic()).map { payload ->
                 Pair(to, payload)
             }
         }.flatMap { (to, payload) ->

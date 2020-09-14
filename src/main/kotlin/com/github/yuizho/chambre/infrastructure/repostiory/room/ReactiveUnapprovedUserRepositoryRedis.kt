@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 import java.time.Duration
 
 @Repository
@@ -43,7 +44,7 @@ class ReactiveUnapprovedUserRepositoryRedis(
     override fun put(roomId: Room.Id, unapprovedUser: UnapprovedUser): Mono<Boolean> {
         return Mono.fromCallable {
             objectMapper.writeValueAsString(unapprovedUser)
-        }.flatMap { serializedUnapprovedUser ->
+        }.subscribeOn(Schedulers.boundedElastic()).flatMap { serializedUnapprovedUser ->
             redisOperations
                     .opsForHash<String, String>()
                     .put(
