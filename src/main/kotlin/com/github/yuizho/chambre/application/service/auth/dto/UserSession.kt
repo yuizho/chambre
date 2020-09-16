@@ -1,4 +1,4 @@
-package com.github.yuizho.chambre.application.service.security.dto
+package com.github.yuizho.chambre.application.service.auth.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty

@@ -1,6 +1,6 @@
 package com.github.yuizho.chambre.config
 
-import com.github.yuizho.chambre.application.service.security.*
+import com.github.yuizho.chambre.application.service.auth.*
 import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
 import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
 import com.github.yuizho.chambre.domain.room.Role

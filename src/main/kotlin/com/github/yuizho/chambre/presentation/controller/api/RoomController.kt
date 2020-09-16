@@ -1,7 +1,7 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
+import com.github.yuizho.chambre.application.service.auth.dto.UserSession
 import com.github.yuizho.chambre.application.service.room.RoomService
-import com.github.yuizho.chambre.application.service.security.dto.UserSession
 import com.github.yuizho.chambre.presentation.controller.api.dto.CreateParameter
 import com.github.yuizho.chambre.presentation.controller.api.dto.CreateResult
 import com.github.yuizho.chambre.presentation.controller.api.dto.UsersResponse

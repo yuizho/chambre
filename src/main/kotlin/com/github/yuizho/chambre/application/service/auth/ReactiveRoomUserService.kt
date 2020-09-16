@@ -1,6 +1,6 @@
-package com.github.yuizho.chambre.application.service.security
+package com.github.yuizho.chambre.application.service.auth
 
-import com.github.yuizho.chambre.application.service.security.dto.UserSession
+import com.github.yuizho.chambre.application.service.auth.dto.UserSession
 import com.github.yuizho.chambre.domain.auth.Participant
 import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
 import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository

@@ -1,7 +1,7 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
+import com.github.yuizho.chambre.application.service.auth.dto.UserSession
 import com.github.yuizho.chambre.application.service.room.EventSubscribeService
-import com.github.yuizho.chambre.application.service.security.dto.UserSession
 import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.domain.room.User
 import com.github.yuizho.chambre.exception.BusinessException

@@ -1,4 +1,4 @@
-package com.github.yuizho.chambre.application.service.security
+package com.github.yuizho.chambre.application.service.auth
 
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
