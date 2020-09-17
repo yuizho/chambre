@@ -18,14 +18,13 @@ class RoomService(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val participantRepository: ReactiveParticipantRepository
 ) {
-    fun create(userName: String, roomName: String): Mono<CreatingRoomResult> {
+    fun create(userName: String, roomName: String, password: String): Mono<CreatingRoomResult> {
         val userId = User.Id(UUID.randomUUID().toString())
         val authToken = UUID.randomUUID().toString()
         val room = Room(
                 Room.Id.from(UUID.randomUUID().toString()),
                 roomName,
-                // TODO: how to generate password
-                "1",
+                password,
                 Room.Status.OPENED,
                 mutableSetOf(
                         User(

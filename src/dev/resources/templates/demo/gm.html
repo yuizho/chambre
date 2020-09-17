@@ -11,6 +11,8 @@
     <input type="text" id="gm-name-text" value="gmA">
     <label for="room-name-text">roomName: </label>
     <input type="text" id="room-name-text" value="roomA">
+    <label for="room-password-text">pass: </label>
+    <input type="text" id="room-password-text" value="123456">
     <button id="create-button">create</button>
 </div>
 <div id="create-result-div"></div>
@@ -46,6 +48,7 @@
         document.querySelector("#create-button").addEventListener('click', () => {
             const userName = document.getElementById("gm-name-text").value
             const roomName = document.getElementById("room-name-text").value
+            const password = document.getElementById("room-password-text").value
             fetch("/api/room/create", {
                 method: "POST",
                 headers: {
@@ -54,7 +57,8 @@
                 },
                 body: JSON.stringify({
                     roomName: roomName,
-                    userName: userName
+                    userName: userName,
+                    password: password
                 })
             }).then(data => data.body.getReader())
                 .then(reader => {

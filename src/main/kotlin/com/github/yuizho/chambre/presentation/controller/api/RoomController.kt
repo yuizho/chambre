@@ -22,12 +22,11 @@ class RoomController(
             @RequestBody @Valid param: CreateParameter,
             uriBuilder: UriComponentsBuilder
     ): Mono<CreateResult> {
-        return roomService.create(param.userName, param.roomName)
+        return roomService.create(param.userName, param.roomName, param.password)
                 .map {
                     CreateResult(
                             it.room.id.id,
                             uriBuilder.path("/room/${it.room.id.id}").build().toUriString(),
-                            it.room.key,
                             it.authToken
                     )
                 }
