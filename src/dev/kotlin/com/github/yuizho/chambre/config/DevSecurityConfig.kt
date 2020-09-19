@@ -8,7 +8,10 @@ import org.springframework.security.config.web.server.ServerHttpSecurity
 @Configuration
 @Profile("dev")
 @EnableConfigurationProperties(SecurityProperties::class)
-class DevSecurityConfig(securityProperties: SecurityProperties) : SecurityConfig(securityProperties) {
+class DevSecurityConfig(
+        securityProperties: SecurityProperties,
+        securityCookieProperties: SecurityCookieProperties
+) : SecurityConfig(securityProperties, securityCookieProperties) {
     override fun configureSpecifiedExchangeSpec(authorizeExchangeSpec: ServerHttpSecurity.AuthorizeExchangeSpec)
             : ServerHttpSecurity.AuthorizeExchangeSpec {
         return super.configureSpecifiedExchangeSpec(authorizeExchangeSpec)

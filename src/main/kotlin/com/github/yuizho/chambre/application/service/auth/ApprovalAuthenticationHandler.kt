@@ -2,7 +2,7 @@ package com.github.yuizho.chambre.application.service.auth
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuizho.chambre.application.service.auth.dto.UserSession
-import com.github.yuizho.chambre.config.SecurityProperties
+import com.github.yuizho.chambre.config.SecurityCookieProperties
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseCookie
 import org.springframework.security.core.Authentication
@@ -11,18 +11,14 @@ import org.springframework.security.web.server.WebFilterExchange
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler
 import reactor.core.publisher.Mono
+import java.time.Duration
 
 
 class ApprovalAuthenticationSuccessHandler(
-        private val securityProperties: SecurityProperties,
+        private val securityCookieProperties: SecurityCookieProperties,
         private val privateKey: ByteArray,
         private val objectMapper: ObjectMapper
 ) : ServerAuthenticationSuccessHandler {
-    companion object {
-        // TODO: propertyで名前変えられるようにしたい
-        const val TOKEN_COOKIE_NAME = "chambre-token"
-    }
-
     override fun onAuthenticationSuccess(
             webFilterExchange: WebFilterExchange,
             authentication: Authentication
@@ -30,10 +26,15 @@ class ApprovalAuthenticationSuccessHandler(
         when (val principal = authentication.principal) {
             is UserSession -> {
                 val jws = principal.toJws(objectMapper, privateKey)
-                // TODO: cookieのpath, secure, httponly, expirationなどを設定できるようにする
+                val cookieName = securityCookieProperties.name
                 webFilterExchange.exchange.response.cookies.add(
-                        TOKEN_COOKIE_NAME,
-                        ResponseCookie.from(TOKEN_COOKIE_NAME, jws.serialize()).build()
+                        cookieName,
+                        ResponseCookie.from(cookieName, jws.serialize())
+                                .path(securityCookieProperties.path)
+                                .httpOnly(securityCookieProperties.httpOnly)
+                                .secure(securityCookieProperties.secure)
+                                .maxAge(Duration.ofSeconds(securityCookieProperties.expireSec))
+                                .build()
                 )
             }
         }

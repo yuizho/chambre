@@ -25,10 +25,11 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import org.springframework.web.server.WebFilter
 
 @Configuration
-@EnableConfigurationProperties(SecurityProperties::class)
+@EnableConfigurationProperties(SecurityProperties::class, SecurityCookieProperties::class)
 class SecurityConfig(
-        securityProperties: SecurityProperties
-) : SecurityConfigAdapter(securityProperties) {
+        securityProperties: SecurityProperties,
+        securityCookieProperties: SecurityCookieProperties
+) : SecurityConfigAdapter(securityProperties, securityCookieProperties) {
     override fun configureSpecifiedExchangeSpec(authorizeExchangeSpec: ServerHttpSecurity.AuthorizeExchangeSpec)
             : ServerHttpSecurity.AuthorizeExchangeSpec {
         return authorizeExchangeSpec
@@ -43,7 +44,8 @@ class SecurityConfig(
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @EnableWebFluxSecurity
 abstract class SecurityConfigAdapter(
-        private val securityProperties: SecurityProperties
+        private val securityProperties: SecurityProperties,
+        private val securityCookieProperties: SecurityCookieProperties
 ) {
     abstract fun configureSpecifiedExchangeSpec(authorizeExchangeSpec: ServerHttpSecurity.AuthorizeExchangeSpec): ServerHttpSecurity.AuthorizeExchangeSpec
 
@@ -109,7 +111,7 @@ abstract class SecurityConfigAdapter(
                         inputStream.readAllBytes()
                     }
             it.setAuthenticationSuccessHandler(
-                    ApprovalAuthenticationSuccessHandler(securityProperties, privateKey, objectMapper)
+                    ApprovalAuthenticationSuccessHandler(securityCookieProperties, privateKey, objectMapper)
             )
             it.setAuthenticationFailureHandler(ApprovalAuthenticationFailureHandler())
             it.setSecurityContextRepository(WebSessionServerSecurityContextRepository())
@@ -121,4 +123,14 @@ abstract class SecurityConfigAdapter(
 @ConstructorBinding
 class SecurityProperties(
         val privateKeyPath: String = "chambre_private_key_demo.der"
+)
+
+@ConfigurationProperties(prefix = "chambre.security.cookie")
+@ConstructorBinding
+class SecurityCookieProperties(
+        val name: String = "chambre-token",
+        val path: String = "/",
+        val secure: Boolean = true,
+        val httpOnly: Boolean = true,
+        val expireSec: Long = 1800
 )

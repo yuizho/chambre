@@ -11,3 +11,6 @@ spring:
 chambre:
   redis:
     expire-sec: 1200
+  security:
+    cookie:
+      secure: false
