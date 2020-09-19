@@ -37,6 +37,7 @@ class ApprovalAuthenticationSuccessHandler(
                                 .build()
                 )
             }
+            else -> throw IllegalStateException("Unexpected principal type")
         }
         webFilterExchange.exchange.response.statusCode = HttpStatus.OK
     }
