@@ -1,12 +1,17 @@
 package com.github.yuizho.chambre.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuizho.chambre.application.service.auth.*
 import com.github.yuizho.chambre.domain.auth.ReactiveParticipantRepository
 import com.github.yuizho.chambre.domain.room.ReactiveRoomRepository
 import com.github.yuizho.chambre.domain.room.Role
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
@@ -20,7 +25,10 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import org.springframework.web.server.WebFilter
 
 @Configuration
-class SecurityConfig : SecurityConfigAdapter() {
+@EnableConfigurationProperties(SecurityProperties::class)
+class SecurityConfig(
+        securityProperties: SecurityProperties
+) : SecurityConfigAdapter(securityProperties) {
     override fun configureSpecifiedExchangeSpec(authorizeExchangeSpec: ServerHttpSecurity.AuthorizeExchangeSpec)
             : ServerHttpSecurity.AuthorizeExchangeSpec {
         return authorizeExchangeSpec
@@ -34,13 +42,17 @@ class SecurityConfig : SecurityConfigAdapter() {
 
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @EnableWebFluxSecurity
-abstract class SecurityConfigAdapter {
+abstract class SecurityConfigAdapter(
+        private val securityProperties: SecurityProperties
+) {
     abstract fun configureSpecifiedExchangeSpec(authorizeExchangeSpec: ServerHttpSecurity.AuthorizeExchangeSpec): ServerHttpSecurity.AuthorizeExchangeSpec
 
     @Bean
     fun securityFilterChain(
             http: ServerHttpSecurity,
-            authenticationManager: ReactiveAuthenticationManager
+            authenticationManager: ReactiveAuthenticationManager,
+            resourceLoader: ResourceLoader,
+            objectMapper: ObjectMapper
     ): SecurityWebFilterChain {
         // https://github.com/spring-projects/spring-security/blob/master/config/src/main/java/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.java#L211
         return http
@@ -51,7 +63,9 @@ abstract class SecurityConfigAdapter {
                 .addFilterAt(
                         authenticationWebFilter(
                                 authenticationManager,
-                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, "/auth")
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, "/auth"),
+                                resourceLoader,
+                                objectMapper
                         ),
                         SecurityWebFiltersOrder.AUTHENTICATION
                 )
@@ -82,14 +96,29 @@ abstract class SecurityConfigAdapter {
 
     fun authenticationWebFilter(
             authenticationManager: ReactiveAuthenticationManager,
-            loginPath: ServerWebExchangeMatcher
+            loginPath: ServerWebExchangeMatcher,
+            resourceLoader: ResourceLoader,
+            objectMapper: ObjectMapper
     ): WebFilter {
-        return AuthenticationWebFilter(authenticationManager).also {
+        return AuthenticationWebFilter(authenticationManager).also { it ->
             it.setRequiresAuthenticationMatcher(loginPath)
             it.setServerAuthenticationConverter(ApprovalFormAuthenticationConverter())
-            it.setAuthenticationSuccessHandler(ApprovalAuthenticationSuccessHandler())
+
+            val privateKey = resourceLoader.getResource(securityProperties.privateKeyPath).inputStream
+                    .use { inputStream ->
+                        inputStream.readAllBytes()
+                    }
+            it.setAuthenticationSuccessHandler(
+                    ApprovalAuthenticationSuccessHandler(securityProperties, privateKey, objectMapper)
+            )
             it.setAuthenticationFailureHandler(ApprovalAuthenticationFailureHandler())
             it.setSecurityContextRepository(WebSessionServerSecurityContextRepository())
         }
     }
 }
+
+@ConfigurationProperties(prefix = "chambre.security")
+@ConstructorBinding
+class SecurityProperties(
+        val privateKeyPath: String = "chambre_private_key_demo.der"
+)

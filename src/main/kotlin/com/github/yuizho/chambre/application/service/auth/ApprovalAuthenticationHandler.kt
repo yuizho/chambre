@@ -1,5 +1,8 @@
 package com.github.yuizho.chambre.application.service.auth
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.yuizho.chambre.application.service.auth.dto.UserSession
+import com.github.yuizho.chambre.config.SecurityProperties
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseCookie
 import org.springframework.security.core.Authentication
@@ -9,7 +12,12 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler
 import reactor.core.publisher.Mono
 
-class ApprovalAuthenticationSuccessHandler : ServerAuthenticationSuccessHandler {
+
+class ApprovalAuthenticationSuccessHandler(
+        private val securityProperties: SecurityProperties,
+        private val privateKey: ByteArray,
+        private val objectMapper: ObjectMapper
+) : ServerAuthenticationSuccessHandler {
     companion object {
         // TODO: propertyで名前変えられるようにしたい
         const val TOKEN_COOKIE_NAME = "chambre-token"
@@ -19,15 +27,16 @@ class ApprovalAuthenticationSuccessHandler : ServerAuthenticationSuccessHandler 
             webFilterExchange: WebFilterExchange,
             authentication: Authentication
     ): Mono<Void> = Mono.fromRunnable {
-        // TODO: アプリケーション側に渡すJWTを作成して設定できるようにする
-        // TODO: cookieのpath, secure, httponly, expirationなどを設定できるようにする
-        webFilterExchange.exchange.response.cookies.add(
-                TOKEN_COOKIE_NAME,
-                ResponseCookie.from(
+        when (val principal = authentication.principal) {
+            is UserSession -> {
+                val jws = principal.toJws(objectMapper, privateKey)
+                // TODO: cookieのpath, secure, httponly, expirationなどを設定できるようにする
+                webFilterExchange.exchange.response.cookies.add(
                         TOKEN_COOKIE_NAME,
-                        authentication.principal.toString().replace(", ", ".")
-                ).build()
-        )
+                        ResponseCookie.from(TOKEN_COOKIE_NAME, jws.serialize()).build()
+                )
+            }
+        }
         webFilterExchange.exchange.response.statusCode = HttpStatus.OK
     }
 }
