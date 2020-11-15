@@ -20,15 +20,14 @@ class EventSubscriberImpl(
         val id = Event.Id.from(roomId.getIdIdWithSchemaPrefix())
         return streamReceiver.receive(StreamOffset.fromStart(id.getIdIdWithSchemaPrefix()))
                 .map {
-                    // TODO: add error handling
                     eventFactory.getEvent(
                             id,
                             objectMapper.readValue(
-                                    it.value["to"]!!,
+                                    it.value["to"] ?: throw RuntimeException("[to] is null."),
                                     object : TypeReference<Set<User.Id>>() {}
                             ),
-                            it.value["eventType"]!!,
-                            it.value["payload"]!!
+                            it.value["eventType"] ?: throw RuntimeException("[eventType] is null."),
+                            it.value["payload"] ?: throw RuntimeException("[payload] is null.")
                     )
                 }
     }
