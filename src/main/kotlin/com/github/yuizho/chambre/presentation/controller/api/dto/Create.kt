@@ -8,9 +8,8 @@ data class CreateParameter(
         @field:NotNull
         @field:Size(min = 1, max = 20)
         val userName: String,
-        @field:NotNull
-        @field:Size(min = 1, max = 20)
-        val roomName: String,
+        @field:Size(max = 20)
+        val roomName: String = "",
         @field:NotNull
         @field:Size(min = 6, max = 6)
         @field:Pattern(regexp = "^[0-9]+$")
