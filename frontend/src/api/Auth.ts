@@ -1,5 +1,5 @@
 const fetchAuth = async (authToken: string): Promise<void> => {
-  await fetch('http://localhost:8080/auth', {
+  await fetch('/auth', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded;',

@@ -16,7 +16,7 @@ const fetchCreateRoom = async (
     };
   }
 
-  const result = await fetch('http://localhost:8080/api/room/create', {
+  const result = await fetch('/api/room/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;',
