@@ -16,7 +16,9 @@ const useCreateRoom = ({ userName, password }: Props) => {
     }
     void fetchCreateRoom(userName, password).then((roomCreateResult) => {
       //  TODO: save  results to recoil
-      void fetchAuth(roomCreateResult.authToken).then(() => history.push('/'));
+      void fetchAuth(roomCreateResult.authToken).then(() =>
+        history.push(`/room/${roomCreateResult.roomId}`),
+      );
     });
   }, [userName, password, history]);
 };
