@@ -1,13 +1,13 @@
-export type RoomCreateResult = {
+export type CreateRoomResult = {
   roomId: string;
   roomUrl: string;
   authToken: string;
 };
 
-const fetchRoomCreate = async (
+const fetchCreateRoom = async (
   userName: string,
   password: string,
-): Promise<RoomCreateResult> => {
+): Promise<CreateRoomResult> => {
   if (!userName || !password) {
     return {
       roomId: '',
@@ -28,11 +28,11 @@ const fetchRoomCreate = async (
     }),
   })
     .then((response) => response.json())
-    .then((data: RoomCreateResult) => data);
+    .then((data: CreateRoomResult) => data);
 
   console.log(result);
 
   return result;
 };
 
-export default fetchRoomCreate;
+export default fetchCreateRoom;

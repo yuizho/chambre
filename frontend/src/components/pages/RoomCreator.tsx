@@ -1,16 +1,16 @@
 import { Button, Container, Input } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
-import useRoomCreate from '../../hooks/use-room-create';
+import useCreateRoom from '../../hooks/use-create-room';
 
-const CreateRoom: FC = () => {
+const RoomCreator: FC = () => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [creatingRoomProp, setCreatingRoomProp] = useState({
+  const [createRoomProp, setCreateRoomProp] = useState({
     userName: '',
     password: '',
   });
 
-  useRoomCreate(creatingRoomProp);
+  useCreateRoom(createRoomProp);
 
   return (
     <>
@@ -31,7 +31,7 @@ const CreateRoom: FC = () => {
         <Button
           mt={3}
           colorScheme="teal"
-          onClick={() => setCreatingRoomProp({ userName, password })}
+          onClick={() => setCreateRoomProp({ userName, password })}
         >
           create
         </Button>
@@ -40,4 +40,4 @@ const CreateRoom: FC = () => {
   );
 };
 
-export default CreateRoom;
+export default RoomCreator;
