@@ -1,4 +1,4 @@
-import { Button, Container, Heading, Input } from '@chakra-ui/react';
+import { Button, Container, Input } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import useRoomCreate from '../../hooks/use-room-create';
 
@@ -14,8 +14,7 @@ const CreateRoom: FC = () => {
 
   return (
     <>
-      <Heading>create room</Heading>
-      <Container pt={4} pb={4} borderWidth="1px" borderRadius="lg">
+      <Container mt={4} pt={4} pb={4} borderWidth="1px" borderRadius="lg">
         <Input
           mt={3}
           value={userName}
