@@ -4,6 +4,7 @@ import { User } from '../../api/Users';
 
 type Prop = {
   user: User;
+  key: string;
 };
 
 const UserItem: FC<Prop> = ({ user }) => (

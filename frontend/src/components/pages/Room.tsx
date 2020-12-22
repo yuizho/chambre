@@ -12,9 +12,14 @@ type ParamType = {
   roomId: string;
 };
 
+type AppliedResult = {
+  id: string;
+  name: string;
+};
+
 const Room = () => {
   const { roomId } = useParams<ParamType>();
-  const [events, setEvents] = useState<string[]>([]);
+  const [events, setEvents] = useState<AppliedResult[]>([]);
   const [users] = useUsers({ roomId });
   const toast = useToast();
 
@@ -29,8 +34,9 @@ const Room = () => {
     eventSource,
     ['APPLIED'],
     (event) => {
-      showToast(event.data);
-      setEvents([...events, event.data]);
+      const applied = JSON.parse(event.data) as AppliedResult;
+      setEvents([...events, applied]);
+      showToast(applied.name);
     },
     [events],
   );
@@ -40,7 +46,7 @@ const Room = () => {
       <UserList users={users} />
       <br />
       {events.map((event) => (
-        <Text>{event}</Text>
+        <Text key={event.id}>{event.name} applied to this room</Text>
       ))}
     </>
   );
