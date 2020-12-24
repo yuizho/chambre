@@ -4,9 +4,10 @@ import {
   useEventSource,
   useEventSourceListener,
 } from 'react-use-event-source-ts';
-import { Text, useToast } from '@chakra-ui/react';
+import { Button, Text, useToast } from '@chakra-ui/react';
 import useUsers from '../../hooks/use-users';
 import UserList from '../organisms/UserList';
+import useApprove from '../../hooks/use-approve';
 
 type ParamType = {
   roomId: string;
@@ -22,6 +23,12 @@ const Room = () => {
   const [events, setEvents] = useState<AppliedResult[]>([]);
   const [users] = useUsers({ roomId });
   const toast = useToast();
+  const [useApproveProp, setUseApproveProp] = useState({
+    userId: '',
+    userName: '',
+  });
+
+  useApprove(useApproveProp);
 
   const showToast = (userName: string) => {
     toast({
@@ -46,7 +53,18 @@ const Room = () => {
       <UserList users={users} />
       <br />
       {events.map((event) => (
-        <Text key={event.id}>{event.name} applied to this room</Text>
+        <>
+          <Text key={event.id}>{event.name} applied to this room</Text>
+          <Button
+            mt={3}
+            colorScheme="teal"
+            onClick={() =>
+              setUseApproveProp({ userId: event.id, userName: event.name })
+            }
+          >
+            approve
+          </Button>
+        </>
       ))}
     </>
   );
