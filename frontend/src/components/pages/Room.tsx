@@ -4,7 +4,7 @@ import {
   useEventSource,
   useEventSourceListener,
 } from 'react-use-event-source-ts';
-import { Button, Text, useToast } from '@chakra-ui/react';
+import { Box, Button, Text, useToast } from '@chakra-ui/react';
 import useUsers from '../../hooks/use-users';
 import UserList from '../organisms/UserList';
 import useApprove from '../../hooks/use-approve';
@@ -72,21 +72,22 @@ const Room = () => {
       <br />
       {events.map((event) => (
         <>
-          <Text key={event.id}>
-            {event.name} {event.type}
-          </Text>
-          {event.type === 'approved' ? (
-            <Button
-              mt={3}
-              colorScheme="teal"
-              onClick={() =>
-                setUseApproveProp({ userId: event.id, userName: event.name })
-              }
-            >
-              approve
-            </Button>
-          ) : (
-            <></>
+          {event.type === 'approved' && (
+            <Box display="flex" alignItems="center" flexGrow={1}>
+              <Text key={event.id}>
+                {event.name} が部屋の参加の承認をもとめています
+              </Text>
+              <Button
+                mt={3}
+                size="xs"
+                colorScheme="teal"
+                onClick={() =>
+                  setUseApproveProp({ userId: event.id, userName: event.name })
+                }
+              >
+                approve
+              </Button>
+            </Box>
           )}
         </>
       ))}

@@ -9,9 +9,7 @@ type Prop = {
 
 const UserList: FC<Prop> = ({ users }) => (
   <Flex>
-    {users.map((user) => (
-      <UserItem key={user.id} user={user} />
-    ))}
+    {users && users.map((user) => <UserItem key={user.id} user={user} />)}
   </Flex>
 );
 
