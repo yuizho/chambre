@@ -22,7 +22,8 @@ type PushedMessage = {
 const Room = () => {
   const { roomId } = useParams<ParamType>();
   const [events, setEvents] = useState<PushedMessage[]>([]);
-  const [users] = useUsers({ roomId });
+  const [joinnedCount, setjoinnedCount] = useState(1);
+  const [users] = useUsers({ roomId, joinnedCount });
   const toast = useToast();
   const [useApproveProp, setUseApproveProp] = useState({
     userId: '',
@@ -59,6 +60,7 @@ const Room = () => {
       const joined = JSON.parse(event.data) as PushedMessage;
       joined.type = 'joined';
       setEvents([...events, joined]);
+      setjoinnedCount(joinnedCount + 1);
       showToast(`${joined.name} がルームに参加しました。`);
     },
     [events],
