@@ -13,14 +13,15 @@ type ParamType = {
   roomId: string;
 };
 
-type AppliedResult = {
+type PushedMessage = {
   id: string;
   name: string;
+  type: 'approved' | 'joined';
 };
 
 const Room = () => {
   const { roomId } = useParams<ParamType>();
-  const [events, setEvents] = useState<AppliedResult[]>([]);
+  const [events, setEvents] = useState<PushedMessage[]>([]);
   const [users] = useUsers({ roomId });
   const toast = useToast();
   const [useApproveProp, setUseApproveProp] = useState({
@@ -30,9 +31,9 @@ const Room = () => {
 
   useApprove(useApproveProp);
 
-  const showToast = (userName: string) => {
+  const showToast = (description: string) => {
     toast({
-      description: `${userName} がルームに入りました。現在あなたの承認を待っています。`,
+      description,
     });
   };
 
@@ -41,9 +42,24 @@ const Room = () => {
     eventSource,
     ['APPLIED'],
     (event) => {
-      const applied = JSON.parse(event.data) as AppliedResult;
+      const applied = JSON.parse(event.data) as PushedMessage;
+      applied.type = 'approved';
       setEvents([...events, applied]);
-      showToast(applied.name);
+      showToast(
+        `${applied.name} がルームに参加したいようです。現在あなたの承認を待っています。`,
+      );
+    },
+    [events],
+  );
+
+  useEventSourceListener(
+    eventSource,
+    ['JOINED'],
+    (event) => {
+      const joined = JSON.parse(event.data) as PushedMessage;
+      joined.type = 'joined';
+      setEvents([...events, joined]);
+      showToast(`${joined.name} がルームに参加しました。`);
     },
     [events],
   );
@@ -54,16 +70,22 @@ const Room = () => {
       <br />
       {events.map((event) => (
         <>
-          <Text key={event.id}>{event.name} applied to this room</Text>
-          <Button
-            mt={3}
-            colorScheme="teal"
-            onClick={() =>
-              setUseApproveProp({ userId: event.id, userName: event.name })
-            }
-          >
-            approve
-          </Button>
+          <Text key={event.id}>
+            {event.name} {event.type}
+          </Text>
+          {event.type === 'approved' ? (
+            <Button
+              mt={3}
+              colorScheme="teal"
+              onClick={() =>
+                setUseApproveProp({ userId: event.id, userName: event.name })
+              }
+            >
+              approve
+            </Button>
+          ) : (
+            <></>
+          )}
         </>
       ))}
     </>
