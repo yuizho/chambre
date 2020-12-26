@@ -14,7 +14,8 @@ type ParamType = {
 };
 
 type PushedMessage = {
-  id: string;
+  eventId: string;
+  userId: string;
   name: string;
   type: 'approved' | 'joined';
 };
@@ -70,27 +71,33 @@ const Room = () => {
     <>
       <UserList users={users} />
       <br />
-      {events.map((event) => (
-        <>
-          {event.type === 'approved' && (
-            <Box display="flex" alignItems="center" flexGrow={1}>
-              <Text key={event.id}>
-                {event.name} が部屋の参加の承認をもとめています
-              </Text>
-              <Button
-                mt={3}
-                size="xs"
-                colorScheme="teal"
-                onClick={() =>
-                  setUseApproveProp({ userId: event.id, userName: event.name })
-                }
-              >
-                approve
-              </Button>
-            </Box>
-          )}
-        </>
-      ))}
+      {events
+        .filter((event) => event.type === 'approved')
+        .map((event) => (
+          <Box
+            key={event.eventId}
+            display="flex"
+            alignItems="center"
+            flexGrow={1}
+          >
+            <Text key={event.userId}>
+              {event.name} が部屋の参加の承認をもとめています
+            </Text>
+            <Button
+              mt={3}
+              size="xs"
+              colorScheme="teal"
+              onClick={() =>
+                setUseApproveProp({
+                  userId: event.userId,
+                  userName: event.name,
+                })
+              }
+            >
+              approve
+            </Button>
+          </Box>
+        ))}
     </>
   );
 };
