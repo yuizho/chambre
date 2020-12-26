@@ -2,6 +2,7 @@ package com.github.yuizho.chambre.domain.room
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import reactor.core.publisher.Mono
+import java.util.*
 
 class UnapprovedUser @JsonCreator constructor(
         id: Id,
@@ -18,7 +19,11 @@ class UnapprovedUser @JsonCreator constructor(
                 AppliedEvent(
                         Event.Id.from(roomId.getIdIdWithSchemaPrefix()),
                         to,
-                        AppliedPayload(id.value, name)
+                        AppliedPayload(
+                                UUID.randomUUID().toString(),
+                                id.value,
+                                name
+                        )
                 )
         )
     }

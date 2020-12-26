@@ -18,7 +18,9 @@ data class JoinedEvent @JsonCreator constructor(
 }
 
 data class JoinedPayload @JsonCreator constructor(
-        @param:JsonProperty("id")
+        @param:JsonProperty("eventId")
+        val eventId: String,
+        @param:JsonProperty("userId")
         val joinedUserId: String,
         @param:JsonProperty("name")
         val joinedUserName: String

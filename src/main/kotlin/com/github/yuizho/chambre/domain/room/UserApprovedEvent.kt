@@ -18,6 +18,8 @@ data class UserApprovedEvent @JsonCreator constructor(
 }
 
 data class UserApprovedPayload @JsonCreator constructor(
+        @param:JsonProperty("eventId")
+        val eventId: String,
         @param:JsonProperty("token")
         val token: String
 )
