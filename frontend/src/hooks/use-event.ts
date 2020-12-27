@@ -2,18 +2,12 @@ import {
   useEventSourceListener,
   EventSourceEvent,
 } from 'react-use-event-source-ts';
-
-export type PushedMessage = {
-  eventId: string;
-  userId: string;
-  name: string;
-  type: 'approved' | 'joined';
-};
+import { EventState } from '../states/EventState';
 
 type Props = {
   eventSource: EventSource | null;
   listener: (e: EventSourceEvent) => void;
-  events: PushedMessage[];
+  events: EventState[];
 };
 
 export const useApprovedEvent = ({ eventSource, listener, events }: Props) => {

@@ -1,10 +1,10 @@
 import { Box, Button, Text } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import useApprove from '../../hooks/use-approve';
-import { PushedMessage } from '../../hooks/use-event';
+import { EventState } from '../../states/EventState';
 
 type Prop = {
-  event: PushedMessage;
+  event: EventState;
 };
 
 const EventItem: FC<Prop> = ({ event }) => {

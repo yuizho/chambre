@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { PushedMessage } from '../../hooks/use-event';
+import { EventState } from '../../states/EventState';
 import EventItem from '../molecules/Eventitem';
 
 type Props = {
-  events: PushedMessage[];
+  events: EventState[];
 };
 
 const EventList: FC<Props> = ({ events }) => {

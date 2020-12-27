@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEventSource } from 'react-use-event-source-ts';
 import { useToast } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
 import useUsers from '../../hooks/use-users';
 import UserList from '../organisms/UserList';
-import {
-  PushedMessage,
-  useApprovedEvent,
-  useJoinedEvent,
-} from '../../hooks/use-event';
+import { useApprovedEvent, useJoinedEvent } from '../../hooks/use-event';
 import EventList from '../organisms/EventList';
+import { EventState, eventState } from '../../states/EventState';
 
 type ParamType = {
   roomId: string;
@@ -17,7 +15,7 @@ type ParamType = {
 
 const Room = () => {
   const { roomId } = useParams<ParamType>();
-  const [events, setEvents] = useState<PushedMessage[]>([]);
+  const [events, setEvents] = useRecoilState(eventState);
   const [joinnedCount, setjoinnedCount] = useState(1);
   const [users] = useUsers({ roomId, joinnedCount });
   const toast = useToast();
@@ -32,9 +30,12 @@ const Room = () => {
   useApprovedEvent({
     eventSource,
     listener: (event) => {
-      const applied = JSON.parse(event.data) as PushedMessage;
+      const applied = JSON.parse(event.data) as EventState;
       applied.type = 'approved';
-      setEvents([...events, applied]);
+      setEvents([
+        ...events.filter((e) => e.eventId !== applied.eventId),
+        applied,
+      ]);
       showToast(
         `${applied.name} がルームに参加したいようです。現在あなたの承認を待っています。`,
       );
@@ -44,9 +45,13 @@ const Room = () => {
   useJoinedEvent({
     eventSource,
     listener: (event) => {
-      const joined = JSON.parse(event.data) as PushedMessage;
+      const joined = JSON.parse(event.data) as EventState;
       joined.type = 'joined';
-      setEvents([...events, joined]);
+      joined.isHandled = true;
+      setEvents([
+        ...events.filter((e) => e.eventId !== joined.eventId),
+        joined,
+      ]);
       setjoinnedCount(joinnedCount + 1);
       showToast(`${joined.name} がルームに参加しました。`);
     },
