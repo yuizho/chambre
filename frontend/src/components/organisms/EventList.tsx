@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { EventState } from '../../states/EventState';
-import EventItem from '../molecules/Eventitem';
+import EventItem from '../molecules/EventItem';
 
 type Props = {
   events: EventState[];
