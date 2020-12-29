@@ -31,7 +31,11 @@ const Room = () => {
     eventSource,
     listener: (event) => {
       const applied = JSON.parse(event.data) as EventState;
+      if (events.find((e) => applied.eventId === e.eventId && e.isHandled)) {
+        return;
+      }
       applied.type = 'approved';
+      applied.roomId = roomId;
       setEvents([
         ...events.filter((e) => e.eventId !== applied.eventId),
         applied,
@@ -46,7 +50,11 @@ const Room = () => {
     eventSource,
     listener: (event) => {
       const joined = JSON.parse(event.data) as EventState;
+      if (events.find((e) => joined.eventId === e.eventId && e.isHandled)) {
+        return;
+      }
       joined.type = 'joined';
+      joined.roomId = roomId;
       joined.isHandled = true;
       setEvents([
         ...events.filter((e) => e.eventId !== joined.eventId),
@@ -62,7 +70,7 @@ const Room = () => {
     <>
       <UserList users={users} />
       <br />
-      <EventList events={events} />
+      <EventList events={events.filter((e) => e.roomId === roomId)} />
     </>
   );
 };
