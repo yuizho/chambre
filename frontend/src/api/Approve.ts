@@ -6,8 +6,8 @@ export type ApprovedUser = {
 const fetchApprove = async (
   userId: string,
   userName: string,
-): Promise<ApprovedUser> => {
-  return await fetch('/api/gm/approve', {
+): Promise<ApprovedUser> =>
+  fetch('/api/gm/approve', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
@@ -17,7 +17,8 @@ const fetchApprove = async (
       userId,
       userName,
     }),
-  }).then((response) => response.json());
-};
+  })
+    .then((response) => response.json())
+    .then((data: ApprovedUser) => data);
 
 export default fetchApprove;
