@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import fetchAuth from '../api/Auth';
 import fetchCreateRoom from '../api/CreateRoom';
-import { errorState } from '../states/FetchState';
+import { errorState, loadingState } from '../states/FetchState';
 
 type Props = {
   userName: string;
@@ -13,11 +13,14 @@ type Props = {
 const useCreateRoom = ({ userName, password }: Props) => {
   const history = useHistory();
   const setError = useSetRecoilState(errorState);
+  const setLoading = useSetRecoilState(loadingState);
+
   useEffect(() => {
     if (!userName || !password) {
       return;
     }
     const load = async (): Promise<void> => {
+      setLoading(true);
       try {
         const roomCreateResult = await fetchCreateRoom(userName, password);
         void (await fetchAuth(roomCreateResult.authToken));
@@ -26,11 +29,13 @@ const useCreateRoom = ({ userName, password }: Props) => {
         if (e instanceof Error) {
           setError({ message: e.message });
         }
+      } finally {
+        setLoading(false);
       }
     };
 
     void load();
-  }, [userName, password, setError, history]);
+  }, [userName, password, setError, setLoading, history]);
 };
 
 export default useCreateRoom;

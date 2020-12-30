@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { errorState } from '../../states/FetchState';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { errorState, loadingState } from '../../states/FetchState';
 import ErrorAlert from '../atoms/ErrorAlert';
+import ProgressBar from '../atoms/ProgressBar';
 
 const Header = () => {
   const [show, setShow] = useState(false);
   const [error, setError] = useRecoilState(errorState);
+  const isLoading = useRecoilValue(loadingState);
 
   return (
     <>
@@ -56,6 +58,7 @@ const Header = () => {
           </Box>
         </Box>
       </Flex>
+      <ProgressBar isLoading={isLoading} />
       <ErrorAlert error={error} onCloseHandler={() => setError(undefined)} />
     </>
   );
