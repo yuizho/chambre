@@ -1,3 +1,5 @@
+import { httpClient } from '../lib/http/HttpClient';
+
 export type UsersResult = {
   users: User[];
 };
@@ -9,11 +11,9 @@ export type User = {
 };
 
 const fetchUsers = async (): Promise<User[]> => {
-  const result = await fetch('/api/room/users', {
+  const result = await httpClient<UsersResult>('/api/room/users', {
     method: 'GET',
-  })
-    .then((response) => response.json())
-    .then((data: UsersResult) => data);
+  });
 
   console.log(result);
 

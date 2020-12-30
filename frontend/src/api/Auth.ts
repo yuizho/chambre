@@ -1,5 +1,7 @@
+import { chambreFetch } from '../lib/http/HttpClient';
+
 const fetchAuth = async (authToken: string): Promise<void> => {
-  await fetch('/auth', {
+  await chambreFetch('/auth', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded;',

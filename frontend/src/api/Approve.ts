@@ -1,3 +1,5 @@
+import { httpClient } from '../lib/http/HttpClient';
+
 export type ApprovedUser = {
   userId: string;
   userName: string;
@@ -7,7 +9,7 @@ const fetchApprove = async (
   userId: string,
   userName: string,
 ): Promise<ApprovedUser> =>
-  fetch('/api/gm/approve', {
+  httpClient<ApprovedUser>('/api/gm/approve', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
@@ -17,8 +19,6 @@ const fetchApprove = async (
       userId,
       userName,
     }),
-  })
-    .then((response) => response.json())
-    .then((data: ApprovedUser) => data);
+  });
 
 export default fetchApprove;

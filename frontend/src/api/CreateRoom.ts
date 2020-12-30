@@ -1,3 +1,5 @@
+import { httpClient } from '../lib/http/HttpClient';
+
 export type CreateRoomResult = {
   roomId: string;
   roomUrl: string;
@@ -16,7 +18,7 @@ const fetchCreateRoom = async (
     };
   }
 
-  const result = await fetch('/api/room/create', {
+  const result = await httpClient<CreateRoomResult>('/api/room/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;',
@@ -26,9 +28,7 @@ const fetchCreateRoom = async (
       userName,
       password,
     }),
-  })
-    .then((response) => response.json())
-    .then((data: CreateRoomResult) => data);
+  });
 
   console.log(result);
 
