@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 import fetchAuth from '../api/Auth';
 import fetchCreateRoom from '../api/CreateRoom';
+import { errorState } from '../states/FetchState';
 
 type Props = {
   userName: string;
@@ -10,17 +12,25 @@ type Props = {
 
 const useCreateRoom = ({ userName, password }: Props) => {
   const history = useHistory();
+  const setError = useSetRecoilState(errorState);
   useEffect(() => {
     if (!userName || !password) {
       return;
     }
-    void fetchCreateRoom(userName, password).then((roomCreateResult) => {
-      //  TODO: save  results to recoil
-      void fetchAuth(roomCreateResult.authToken).then(() =>
-        history.push(`/room/${roomCreateResult.roomId}`),
-      );
-    });
-  }, [userName, password, history]);
+    const load = async (): Promise<void> => {
+      try {
+        const roomCreateResult = await fetchCreateRoom(userName, password);
+        void (await fetchAuth(roomCreateResult.authToken));
+        history.push(`/room/${roomCreateResult.roomId}`);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError({ message: e.message });
+        }
+      }
+    };
+
+    void load();
+  }, [userName, password, setError, history]);
 };
 
 export default useCreateRoom;
