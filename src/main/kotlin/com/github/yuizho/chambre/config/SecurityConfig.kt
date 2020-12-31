@@ -22,6 +22,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository
+import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers
 import org.springframework.web.server.WebFilter
@@ -36,6 +37,7 @@ class SecurityConfig(
             : ServerHttpSecurity.AuthorizeExchangeSpec {
         return authorizeExchangeSpec
                 .pathMatchers("/auth").permitAll()
+                .pathMatchers("/api/csrf").permitAll()
                 .pathMatchers("/api/room/create").permitAll()
                 .pathMatchers("/api/subscribe/unapproved").permitAll()
                 .pathMatchers("/api/user/apply").permitAll()
@@ -63,7 +65,7 @@ abstract class SecurityConfigAdapter(
                 .httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
-                .csrf().and()
+                .csrf().csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse()).and()
                 .addFilterAt(
                         authenticationWebFilter(
                                 authenticationManager,
