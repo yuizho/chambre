@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 const handleHttpError = (response: Response) => {
   if (response.ok) {
     return response;
@@ -5,19 +7,42 @@ const handleHttpError = (response: Response) => {
   throw Error(`Http status error: ${response.status}`);
 };
 
+function getCsrfToken(): Promise<string> {
+  const csrfToken = Cookies.get('XSRF-TOKEN');
+  if (csrfToken) {
+    return Promise.resolve(csrfToken);
+  }
+
+  return fetch('/api/csrf', { method: 'GET' }).then(() => {
+    const ct = Cookies.get('XSRF-TOKEN');
+    if (ct) {
+      return ct;
+    }
+    throw Error('csrf token required');
+  });
+}
+
 export const chambreFetch = (
   input: RequestInfo,
-  init?: RequestInit,
+  init: RequestInit,
 ): Promise<Response> =>
-  fetch(input, init)
-    .catch((e) => {
-      throw Error(e);
+  getCsrfToken().then((csrfToken) =>
+    fetch(input, {
+      ...init,
+      headers: {
+        ...init.headers,
+        ...{ 'X-XSRF-TOKEN': csrfToken },
+      },
     })
-    .then(handleHttpError);
+      .catch((e) => {
+        throw Error(e);
+      })
+      .then(handleHttpError),
+  );
 
 export const httpClient = <T>(
   input: RequestInfo,
-  init?: RequestInit,
+  init: RequestInit,
   responseHandler: (body: Body) => Promise<any> = (resp) => resp.json(),
 ): Promise<T> =>
   chambreFetch(input, init)
