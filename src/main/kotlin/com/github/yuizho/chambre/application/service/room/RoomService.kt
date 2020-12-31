@@ -46,6 +46,10 @@ class RoomService(
         ).then(Mono.just(CreatingRoomResult(authToken, room)))
     }
 
+    fun room(id: Room.Id): Mono<Room> =
+            reactiveRoomRepository.findRoomBy(id)
+                    .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))
+
     fun users(id: Room.Id): Mono<List<User>> {
         return reactiveRoomRepository.findRoomBy(id)
                 .switchIfEmpty(Mono.error(BusinessException("invalid room id.")))

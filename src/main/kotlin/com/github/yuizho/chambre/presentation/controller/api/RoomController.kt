@@ -2,8 +2,10 @@ package com.github.yuizho.chambre.presentation.controller.api
 
 import com.github.yuizho.chambre.application.service.auth.dto.UserSession
 import com.github.yuizho.chambre.application.service.room.RoomService
+import com.github.yuizho.chambre.domain.room.Room
 import com.github.yuizho.chambre.presentation.controller.api.dto.CreateParameter
 import com.github.yuizho.chambre.presentation.controller.api.dto.CreateResult
+import com.github.yuizho.chambre.presentation.controller.api.dto.RoomResponse
 import com.github.yuizho.chambre.presentation.controller.api.dto.UsersResponse
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.*
@@ -16,6 +18,12 @@ import javax.validation.Valid
 class RoomController(
         private val roomService: RoomService
 ) {
+    
+    @GetMapping("/information/{roomId}")
+    fun room(@PathVariable("roomId") roomId: String): Mono<RoomResponse> {
+        return roomService.room(Room.Id.from(roomId))
+                .map { room -> RoomResponse(roomId, room.name, room.status) }
+    }
 
     @PostMapping("/create")
     fun create(

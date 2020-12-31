@@ -38,6 +38,7 @@ class SecurityConfig(
         return authorizeExchangeSpec
                 .pathMatchers("/auth").permitAll()
                 .pathMatchers("/api/csrf").permitAll()
+                .pathMatchers("/api/room/information/**").permitAll()
                 .pathMatchers("/api/room/create").permitAll()
                 .pathMatchers("/api/subscribe/unapproved").permitAll()
                 .pathMatchers("/api/user/apply").permitAll()
