@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import RoomCreator from './components/pages/RoomCreator';
 import Home from './components/pages/Home';
 import Header from './components/organisms/Header';
-import Room from './components/pages/Room';
+import Room from './containers/pages/Room';
 
 const App: FC = () => (
   <RecoilRoot>
