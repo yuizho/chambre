@@ -16,7 +16,7 @@ import javax.validation.Valid
 class UserController(
         private val userService: UserService
 ) {
-    @GetMapping("/information")
+    @GetMapping("/status")
     fun user(): Mono<UserResponse> {
         return ReactiveSecurityContextHolder.getContext()
                 .map {
