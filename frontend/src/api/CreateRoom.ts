@@ -10,19 +10,10 @@ const fetchCreateRoom = async (
   userName: string,
   password: string,
 ): Promise<CreateRoomResult> => {
-  if (!userName || !password) {
-    return {
-      roomId: '',
-      roomUrl: '',
-      authToken: '',
-    };
-  }
-
   const result = await httpClient<CreateRoomResult>('/api/room/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;',
-      // TODO: how to handle csrf [csrfHeaderName]: csrfToken,
     },
     body: JSON.stringify({
       userName,
