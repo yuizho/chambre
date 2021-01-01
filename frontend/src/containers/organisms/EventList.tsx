@@ -4,7 +4,7 @@ import { useToast } from '@chakra-ui/react';
 import { useEventSource } from 'react-use-event-source-ts';
 import { eventState, EventState } from '../../states/EventState';
 import EventListComponent from '../../components/organisms/EventList';
-import { useApprovedEvent, useJoinedEvent } from '../../hooks/use-event';
+import { useAppliedEvent, useJoinedEvent } from '../../hooks/use-event';
 
 type Props = {
   roomId: string;
@@ -23,7 +23,7 @@ const EventList: FC<Props> = ({ roomId, setJoinnedCount }) => {
   };
 
   const [eventSource] = useEventSource('/api/subscribe/approved', true);
-  useApprovedEvent({
+  useAppliedEvent({
     eventSource,
     listener: (event) => {
       const applied = JSON.parse(event.data) as EventState;
