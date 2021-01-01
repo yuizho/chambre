@@ -1,29 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
-import fetchUsers, { User } from '../api/Users';
+import fetchRoomStatus from '../api/RoomStatus';
+import HttpError from '../lib/error/HttpError';
 import { errorState, loadingState } from '../states/FetchState';
 
 type Props = {
   roomId: string;
-  joinnedCount: number;
-  isOpened: boolean;
 };
 
-const useUsers = ({ roomId, joinnedCount, isOpened }: Props) => {
-  const [users, setUsers] = useState<User[]>([]);
+const useRoomStatus = ({ roomId }: Props) => {
+  const [opened, setOpened] = useState(false);
   const setError = useSetRecoilState(errorState);
   const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
-    if (!isOpened) {
-      return;
-    }
     const load = async (): Promise<void> => {
       setLoading(true);
       try {
-        setUsers(await fetchUsers());
+        const roomStatus = await fetchRoomStatus(roomId);
+        setOpened(roomStatus.status === 0);
       } catch (e) {
-        if (e instanceof Error) {
+        if (e instanceof HttpError) {
+          setOpened(false);
+        } else if (e instanceof Error) {
           setError({ message: e.message });
         }
       } finally {
@@ -32,9 +31,9 @@ const useUsers = ({ roomId, joinnedCount, isOpened }: Props) => {
     };
 
     void load();
-  }, [roomId, joinnedCount, setError, setLoading, isOpened]);
+  }, [roomId, setError, setLoading]);
 
-  return [users];
+  return [opened];
 };
 
-export default useUsers;
+export default useRoomStatus;

@@ -7,6 +7,7 @@ import useUsers from '../../hooks/use-users';
 import { useApprovedEvent, useJoinedEvent } from '../../hooks/use-event';
 import { EventState, eventState } from '../../states/EventState';
 import RoomComponent from '../../components/pages/Room';
+import useRoomStatus from '../../hooks/use-room-status';
 
 type ParamType = {
   roomId: string;
@@ -16,7 +17,10 @@ const Room: FC = () => {
   const { roomId } = useParams<ParamType>();
   const [events, setEvents] = useRecoilState(eventState);
   const [joinnedCount, setjoinnedCount] = useState(1);
-  const [users] = useUsers({ roomId, joinnedCount });
+
+  const [isOpened] = useRoomStatus({ roomId });
+  const [users] = useUsers({ roomId, joinnedCount, isOpened });
+
   const toast = useToast();
 
   const showToast = (description: string) => {
@@ -25,6 +29,7 @@ const Room: FC = () => {
     });
   };
 
+  // TODO: when this room doesn't exist, this event is still fired. probably this event logic shold be  separated as another component
   const [eventSource] = useEventSource('/api/subscribe/approved', true);
   useApprovedEvent({
     eventSource,
@@ -66,7 +71,7 @@ const Room: FC = () => {
     events,
   });
 
-  return <RoomComponent {...{ roomId, users, events }} />;
+  return <RoomComponent {...{ roomId, isOpened, users, events }} />;
 };
 
 export default Room;

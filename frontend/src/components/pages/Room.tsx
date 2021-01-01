@@ -6,15 +6,22 @@ import { User } from '../../api/Users';
 
 type Prop = {
   roomId: string;
+  isOpened: boolean;
   users: User[];
   events: EventState[];
 };
 
-const Room: FC<Prop> = ({ roomId, users, events }) => (
+const Room: FC<Prop> = ({ roomId, users, events, isOpened }) => (
   <>
-    <UserList users={users} />
-    <br />
-    <EventList events={events.filter((e) => e.roomId === roomId)} />
+    {isOpened ? (
+      <>
+        <UserList users={users} />
+        <br />
+        <EventList events={events.filter((e) => e.roomId === roomId)} />
+      </>
+    ) : (
+      <h1>this room is closed</h1>
+    )}
   </>
 );
 
