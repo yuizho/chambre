@@ -1,10 +1,11 @@
 import Cookies from 'js-cookie';
+import HttpError from '../error/HttpError';
 
 const handleHttpError = (response: Response) => {
   if (response.ok) {
     return response;
   }
-  throw Error(`Http status error: ${response.status}`);
+  throw new HttpError(response);
 };
 
 function getCsrfToken(): Promise<string> {
