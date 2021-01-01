@@ -1,5 +1,6 @@
 package com.github.yuizho.chambre.presentation.controller.api.dto
 
+import com.github.yuizho.chambre.domain.room.Role
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
@@ -16,5 +17,7 @@ data class ApplyParameter(
 )
 
 data class ApplyResponse(
-        val userId: String
+        val userId: String,
+        val userName: String,
+        val role: Role = Role.NORMAL
 )

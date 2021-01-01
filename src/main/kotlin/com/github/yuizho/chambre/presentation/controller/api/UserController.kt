@@ -33,7 +33,7 @@ class UserController(
                 param.roomKey,
                 param.userName
         ).map { userId ->
-            ApplyResponse(userId)
+            ApplyResponse(userId, param.userName)
         }
     }
 }
