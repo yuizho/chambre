@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import UserList from '../organisms/UserList';
 import EventList from '../organisms/EventList';
 import { EventState } from '../../states/EventState';
@@ -10,14 +10,12 @@ type Prop = {
   events: EventState[];
 };
 
-const Room: FC<Prop> = ({ roomId, users, events }) => {
-  return (
-    <>
-      <UserList users={users} />
-      <br />
-      <EventList events={events.filter((e) => e.roomId === roomId)} />
-    </>
-  );
-};
+const Room: FC<Prop> = ({ roomId, users, events }) => (
+  <>
+    <UserList users={users} />
+    <br />
+    <EventList events={events.filter((e) => e.roomId === roomId)} />
+  </>
+);
 
 export default Room;
