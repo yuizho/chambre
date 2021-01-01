@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import fetchApprove from '../api/Approve';
 import { errorState, loadingState } from '../states/FetchState';
 
