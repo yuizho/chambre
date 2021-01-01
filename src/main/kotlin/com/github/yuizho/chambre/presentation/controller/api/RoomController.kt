@@ -18,9 +18,9 @@ import javax.validation.Valid
 class RoomController(
         private val roomService: RoomService
 ) {
-    
-    @GetMapping("/information/{roomId}")
-    fun room(@PathVariable("roomId") roomId: String): Mono<RoomResponse> {
+
+    @GetMapping("/status/{roomId}")
+    fun status(@PathVariable("roomId") roomId: String): Mono<RoomResponse> {
         return roomService.room(Room.Id.from(roomId))
                 .map { room -> RoomResponse(roomId, room.name, room.status) }
     }
