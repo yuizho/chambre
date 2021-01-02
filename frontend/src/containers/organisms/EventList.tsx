@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
 import { useRecoilState } from 'recoil';
 import { useToast } from '@chakra-ui/react';
-import { useEventSource } from 'react-use-event-source-ts';
+import {
+  useEventSource,
+  useEventSourceListener,
+} from 'react-use-event-source-ts';
 import { eventState, EventState } from '../../states/EventState';
 import EventListComponent from '../../components/organisms/EventList';
-import { useAppliedEvent, useJoinedEvent } from '../../hooks/use-event';
 
 type Props = {
   roomId: string;
@@ -23,9 +25,11 @@ const EventList: FC<Props> = ({ roomId, setJoinnedCount }) => {
   };
 
   const [eventSource] = useEventSource('/api/subscribe/approved', true);
-  useAppliedEvent({
+
+  useEventSourceListener(
     eventSource,
-    listener: (event) => {
+    ['APPLIED'],
+    (event) => {
       const applied = JSON.parse(event.data) as EventState;
       if (events.find((e) => applied.eventId === e.eventId && e.isHandled)) {
         return;
@@ -40,12 +44,13 @@ const EventList: FC<Props> = ({ roomId, setJoinnedCount }) => {
         `${applied.name} がルームに参加したいようです。現在あなたの承認を待っています。`,
       );
     },
-    events,
-  });
+    [events],
+  );
 
-  useJoinedEvent({
+  useEventSourceListener(
     eventSource,
-    listener: (event) => {
+    ['JOINED'],
+    (event) => {
       const joined = JSON.parse(event.data) as EventState;
       if (events.find((e) => joined.eventId === e.eventId && e.isHandled)) {
         return;
@@ -60,8 +65,8 @@ const EventList: FC<Props> = ({ roomId, setJoinnedCount }) => {
       setJoinnedCount((n) => n + 1);
       showToast(`${joined.name} がルームに参加しました。`);
     },
-    events,
-  });
+    [events],
+  );
 
   return (
     <EventListComponent events={events.filter((e) => e.roomId === roomId)} />
