@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import UserList from '../organisms/UserList';
 import EventList from '../../containers/organisms/EventList';
 import { User } from '../../api/Users';
+import PageFrame from '../templates/PageFrame';
 
 type Prop = {
   roomId: string;
@@ -11,7 +12,7 @@ type Prop = {
 };
 
 const Room: FC<Prop> = ({ roomId, users, setJoinnedCount, isOpened }) => (
-  <>
+  <PageFrame>
     {isOpened ? (
       <>
         <UserList users={users} />
@@ -21,7 +22,7 @@ const Room: FC<Prop> = ({ roomId, users, setJoinnedCount, isOpened }) => (
     ) : (
       <h1>this room is closed</h1>
     )}
-  </>
+  </PageFrame>
 );
 
 export default Room;
