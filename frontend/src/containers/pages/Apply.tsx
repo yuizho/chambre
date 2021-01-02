@@ -1,8 +1,8 @@
-import { Text } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import RoomEntryForm from '../../components/pages/RoomEntryForm';
 import useApply from '../../hooks/use-apply';
+import ApplyEvent from '../melecules/ApplyEvent';
 
 type ParamType = {
   roomId: string;
@@ -17,9 +17,7 @@ const RoomCreator: FC = () => {
     password: '',
   });
 
-  const [isWaitingGmOperation] = useApply({ roomId, ...applyProp });
-
-  // TODO: when isWaitngGmOperationTrue, event subscription is approved
+  const { applied, userId } = useApply({ roomId, ...applyProp });
 
   const onUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     void setUserName(event.target.value);
@@ -41,7 +39,7 @@ const RoomCreator: FC = () => {
           onClickSubmitButton,
         }}
       />
-      {isWaitingGmOperation && <Text>waiting hosts operation...</Text>}
+      {applied && <ApplyEvent roomId={roomId} userId={userId} />}
     </>
   );
 };

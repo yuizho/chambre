@@ -12,6 +12,7 @@ type Props = {
 
 const useApply = ({ roomId, userName, password }: Props) => {
   const [applied, setApplied] = useState(false);
+  const [userId, setUserId] = useState('');
   const setError = useSetRecoilState(errorState);
   const setLoading = useSetRecoilState(loadingState);
   const setUserState = useSetRecoilState(userState);
@@ -29,7 +30,7 @@ const useApply = ({ roomId, userName, password }: Props) => {
           name: applyResult.userName,
           role: applyResult.role,
         });
-
+        setUserId(applyResult.userId);
         setApplied(true);
       } catch (e) {
         if (e instanceof Error) {
@@ -43,7 +44,7 @@ const useApply = ({ roomId, userName, password }: Props) => {
     void load();
   }, [roomId, userName, password, setError, setLoading, setUserState]);
 
-  return [applied];
+  return { applied, userId };
 };
 
 export default useApply;
