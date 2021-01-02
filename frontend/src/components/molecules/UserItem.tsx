@@ -6,9 +6,10 @@ type Prop = {
   user: User;
   key: string;
   margin: number;
+  isYou: boolean;
 };
 
-const UserItem: FC<Prop> = ({ user, key, margin }) => {
+const UserItem: FC<Prop> = ({ user, key, margin, isYou }) => {
   const userItemBox = (
     <Box
       key={key}
@@ -28,6 +29,7 @@ const UserItem: FC<Prop> = ({ user, key, margin }) => {
       <Text mt={1} fontWeight="bold">
         {user.name}
       </Text>
+      {isYou && <Text>(You)</Text>}
     </Box>
   );
 

@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { User } from '../../api/Users';
-import UserItem from '../molecules/UserItem';
+import UserItem from '../../containers/melecules/UserItem';
 
 type Prop = {
   users: User[];
