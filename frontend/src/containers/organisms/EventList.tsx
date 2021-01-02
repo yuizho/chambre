@@ -30,7 +30,7 @@ const EventList: FC<Props> = ({ roomId, setJoinnedCount }) => {
       if (events.find((e) => applied.eventId === e.eventId && e.isHandled)) {
         return;
       }
-      applied.type = 'approved';
+      applied.type = 'applied';
       applied.roomId = roomId;
       setEvents([
         ...events.filter((e) => e.eventId !== applied.eventId),

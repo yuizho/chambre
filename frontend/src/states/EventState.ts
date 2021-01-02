@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-type EventType = 'approved' | 'joined';
+type EventType = 'applied' | 'joined';
 
 export type EventState = {
   roomId: string;
