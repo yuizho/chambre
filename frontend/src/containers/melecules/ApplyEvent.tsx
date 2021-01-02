@@ -1,8 +1,5 @@
-import React, { FC, useState } from 'react';
-import {
-  useEventSource,
-  useEventSourceListener,
-} from 'react-use-event-source-ts';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import { useEventSourceListener } from 'react-use-event-source-ts';
 import ApplyEventComponent from '../../components/molecules/ApplyEvent';
 import useAuth from '../../hooks/use-auth';
 
@@ -14,11 +11,14 @@ type Props = {
 const ApplyEvent: FC<Props> = ({ roomId, userId }) => {
   const [authToken, setAuthToken] = useState('');
 
-  const [eventSource] = useEventSource(
-    `/api/subscribe/unapproved?roomId=${roomId}&userId=${userId}`,
+  const eventSource = useRef<EventSource>(
+    new EventSource(
+      `/api/subscribe/unapproved?roomId=${roomId}&userId=${userId}`,
+    ),
   );
+
   useEventSourceListener(
-    eventSource,
+    eventSource.current,
     ['APPROVED'],
     (event) => {
       const approved = JSON.parse(event.data) as {
@@ -29,6 +29,15 @@ const ApplyEvent: FC<Props> = ({ roomId, userId }) => {
       setAuthToken(approved.token);
     },
     [authToken],
+  );
+
+  // close EventSource when this page is closed.
+  useEffect(
+    () => () => {
+      console.log('close EventSource of ApplyEvent');
+      eventSource.current.close();
+    },
+    [],
   );
 
   useAuth({ authToken, roomId });
