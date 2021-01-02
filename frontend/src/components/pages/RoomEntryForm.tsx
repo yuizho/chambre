@@ -17,29 +17,27 @@ const RoomEntryForm: FC<Prop> = ({
   onPasswordChange,
   buttonLabel,
   onClickSubmitButton,
-}) => {
-  return (
-    <>
-      <Container mt={4} pt={4} pb={4} borderWidth="1px" borderRadius="lg">
-        <Input
-          mt={3}
-          value={userName}
-          placeholder="your name"
-          onChange={onUserNameChange}
-        />
-        <Input
-          type="password"
-          mt={3}
-          value={password}
-          placeholder="password (6 digits)"
-          onChange={onPasswordChange}
-        />
-        <Button mt={3} colorScheme="teal" onClick={onClickSubmitButton}>
-          {buttonLabel}
-        </Button>
-      </Container>
-    </>
-  );
-};
+}) => (
+  <>
+    <Container mt={4} pt={4} pb={4} borderWidth="1px" borderRadius="lg">
+      <Input
+        mt={3}
+        value={userName}
+        placeholder="your name"
+        onChange={onUserNameChange}
+      />
+      <Input
+        type="password"
+        mt={3}
+        value={password}
+        placeholder="password (6 digits)"
+        onChange={onPasswordChange}
+      />
+      <Button mt={3} colorScheme="teal" onClick={onClickSubmitButton}>
+        {buttonLabel}
+      </Button>
+    </Container>
+  </>
+);
 
 export default RoomEntryForm;

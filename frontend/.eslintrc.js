@@ -31,12 +31,6 @@ module.exports = {
   rules: {
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
-    'object-curly-newline': [
-      'error',
-      {
-        ObjectPattern: { multiline: false },
-      },
-    ],
     'lines-between-class-members': [
       'error',
       'always',
