@@ -1,8 +1,8 @@
 import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import RoomEntryForm from '../../components/pages/RoomEntryForm';
 import useApply from '../../hooks/use-apply';
 import ApplyEvent from '../melecules/ApplyEvent';
+import ApplyComponent from '../../components/pages/Apply';
 
 type ParamType = {
   roomId: string;
@@ -29,7 +29,7 @@ const RoomCreator: FC = () => {
 
   return (
     <>
-      <RoomEntryForm
+      <ApplyComponent
         {...{
           userName,
           onUserNameChange,

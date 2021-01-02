@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import RoomEntryForm from '../../components/pages/RoomEntryForm';
+import RoomCreatorComponent from '../../components/pages/RoomCreator';
 import useCreateRoom from '../../hooks/use-create-room';
 
 const RoomCreator: FC = () => {
@@ -22,7 +22,7 @@ const RoomCreator: FC = () => {
   const buttonLabel = 'create';
 
   return (
-    <RoomEntryForm
+    <RoomCreatorComponent
       {...{
         userName,
         onUserNameChange,

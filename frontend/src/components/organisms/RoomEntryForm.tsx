@@ -1,6 +1,5 @@
 import { Button, Container, Input } from '@chakra-ui/react';
 import React, { FC } from 'react';
-import PageFrame from '../templates/PageFrame';
 
 type Prop = {
   userName: string;
@@ -19,7 +18,7 @@ const RoomEntryForm: FC<Prop> = ({
   buttonLabel,
   onClickSubmitButton,
 }) => (
-  <PageFrame>
+  <>
     <Container mt={4} pt={4} pb={4} borderWidth="1px" borderRadius="lg">
       <Input
         mt={3}
@@ -38,7 +37,7 @@ const RoomEntryForm: FC<Prop> = ({
         {buttonLabel}
       </Button>
     </Container>
-  </PageFrame>
+  </>
 );
 
 export default RoomEntryForm;
