@@ -5,9 +5,10 @@ import { EventState } from '../../states/EventState';
 type Prop = {
   event: EventState;
   onApprove: () => void;
+  onReject: () => void;
 };
 
-const EventItem: FC<Prop> = ({ event, onApprove }) => (
+const EventItem: FC<Prop> = ({ event, onApprove, onReject }) => (
   <>
     <Box key={event.eventId} display="flex" alignItems="center" flexGrow={1}>
       <Text key={event.userId}>
@@ -15,6 +16,9 @@ const EventItem: FC<Prop> = ({ event, onApprove }) => (
       </Text>
       <Button mt={3} size="xs" colorScheme="teal" onClick={onApprove}>
         approve
+      </Button>
+      <Button mt={3} size="xs" colorScheme="red" onClick={onReject}>
+        reject
       </Button>
     </Box>
   </>

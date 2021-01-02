@@ -1,4 +1,6 @@
+import { useToast } from '@chakra-ui/react';
 import React, { FC, useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useEventSourceListener } from 'react-use-event-source-ts';
 import ApplyEventComponent from '../../components/molecules/ApplyEvent';
 import useAuth from '../../hooks/use-auth';
@@ -9,7 +11,9 @@ type Props = {
 };
 
 const ApplyEvent: FC<Props> = ({ roomId, userId }) => {
+  const history = useHistory();
   const [authToken, setAuthToken] = useState('');
+  const toast = useToast();
 
   const eventSource = useRef<EventSource>(
     new EventSource(
@@ -29,6 +33,20 @@ const ApplyEvent: FC<Props> = ({ roomId, userId }) => {
       setAuthToken(approved.token);
     },
     [authToken],
+  );
+
+  useEventSourceListener(
+    eventSource.current,
+    ['REJECTED'],
+    () => {
+      console.log('rejected');
+      toast({
+        description:
+          'ルームへの参加申請が却下されました。ルームマスターと直接連絡をとってから再度やり直して見てください。',
+      });
+      history.push('/');
+    },
+    [],
   );
 
   // close EventSource when this page is closed.
