@@ -8,8 +8,9 @@ type Prop = {
 };
 
 const UserList: FC<Prop> = ({ users }) => (
-  <Flex>
-    {users && users.map((user) => <UserItem key={user.id} user={user} />)}
+  <Flex direction="row" wrap="wrap">
+    {users &&
+      users.map((user) => <UserItem key={user.id} user={user} margin={1} />)}
   </Flex>
 );
 
