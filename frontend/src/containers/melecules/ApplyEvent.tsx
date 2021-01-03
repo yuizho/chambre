@@ -2,8 +2,10 @@ import { useToast } from '@chakra-ui/react';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useEventSourceListener } from 'react-use-event-source-ts';
+import { useSetRecoilState } from 'recoil';
 import ApplyEventComponent from '../../components/molecules/ApplyEvent';
 import useAuth from '../../hooks/use-auth';
+import { loadingState } from '../../states/FetchState';
 
 type Props = {
   roomId: string;
@@ -14,6 +16,13 @@ const ApplyEvent: FC<Props> = ({ roomId, userId }) => {
   const history = useHistory();
   const [authToken, setAuthToken] = useState('');
   const toast = useToast();
+  const setLoading = useSetRecoilState(loadingState);
+
+  useEffect(() => {
+    setLoading(true);
+
+    return () => setLoading(false);
+  }, [setLoading]);
 
   const eventSource = useRef<EventSource>(
     new EventSource(
