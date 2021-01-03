@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useApply from '../../hooks/use-apply';
-import ApplyEvent from '../melecules/ApplyEvent';
 import ApplyComponent from '../../components/pages/Apply';
 
 type ParamType = {
@@ -28,19 +27,19 @@ const RoomCreator: FC = () => {
   const buttonLabel = 'apply';
 
   return (
-    <>
-      <ApplyComponent
-        {...{
-          userName,
-          onUserNameChange,
-          password,
-          onPasswordChange,
-          buttonLabel,
-          onClickSubmitButton,
-        }}
-      />
-      {applied && <ApplyEvent roomId={roomId} userId={userId} />}
-    </>
+    <ApplyComponent
+      {...{
+        userName,
+        onUserNameChange,
+        password,
+        onPasswordChange,
+        buttonLabel,
+        onClickSubmitButton,
+        applied,
+        roomId,
+        userId,
+      }}
+    />
   );
 };
 
