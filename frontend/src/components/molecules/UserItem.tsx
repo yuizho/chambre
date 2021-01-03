@@ -34,7 +34,7 @@ const UserItem: FC<Prop> = ({ user, key, margin, isYou }) => {
   );
 
   return user.role === 1 ? (
-    <Tooltip label="Room Host" hasArrow>
+    <Tooltip label="ルームマスター" hasArrow>
       {userItemBox}
     </Tooltip>
   ) : (
