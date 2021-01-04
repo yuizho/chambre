@@ -11,9 +11,25 @@ type Prop = {
   onClickSubmitButton: () => void;
 };
 
-const RoomCreator: FC<Prop> = (prop) => (
+const RoomCreator: FC<Prop> = ({
+  userName,
+  onUserNameChange,
+  password,
+  onPasswordChange,
+  buttonLabel,
+  onClickSubmitButton,
+}) => (
   <PageFrame>
-    <RoomEntryForm {...prop} />
+    <RoomEntryForm
+      {...{
+        userName,
+        onUserNameChange,
+        password,
+        onPasswordChange,
+        buttonLabel,
+        onClickSubmitButton,
+      }}
+    />
   </PageFrame>
 );
 

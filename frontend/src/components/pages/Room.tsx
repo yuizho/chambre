@@ -13,15 +13,17 @@ type Prop = {
 
 const Room: FC<Prop> = ({ roomId, users, setJoinnedCount, isOpened }) => (
   <PageFrame>
-    {isOpened ? (
-      <>
-        <UserList users={users} />
-        <br />
-        <EventList {...{ roomId, setJoinnedCount }} />
-      </>
-    ) : (
-      <h1>this room is closed</h1>
-    )}
+    <>
+      {isOpened ? (
+        <>
+          <UserList users={users} />
+          <br />
+          <EventList {...{ roomId, setJoinnedCount }} />
+        </>
+      ) : (
+        <h1>this room is closed</h1>
+      )}
+    </>
   </PageFrame>
 );
 

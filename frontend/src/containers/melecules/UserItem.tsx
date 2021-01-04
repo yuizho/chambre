@@ -12,6 +12,7 @@ type Prop = {
 
 const UserItem: FC<Prop> = ({ user, key, margin }) => {
   const currentUser = useRecoilValue(userState);
+
   return (
     <UserItemComponent
       {...{ user, key, margin, isYou: user.id === currentUser?.id }}
