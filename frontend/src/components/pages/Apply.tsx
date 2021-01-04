@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import RoomEntryForm from '../organisms/RoomEntryForm';
+import RoomEntryForm from '../../containers/organisms/RoomEntryForm';
 import PageFrame from '../templates/PageFrame';
 import ApplyEvent from '../../containers/melecules/ApplyEvent';
 

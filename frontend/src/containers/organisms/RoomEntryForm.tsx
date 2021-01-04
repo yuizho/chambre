@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import RoomEntryForm from '../../containers/organisms/RoomEntryForm';
-import PageFrame from '../templates/PageFrame';
+import { useForm } from 'react-hook-form';
+import RoomTntryFormComponent from '../../components/organisms/RoomEntryForm';
 
 type Prop = {
   userName: string;
@@ -11,16 +11,20 @@ type Prop = {
   onClickSubmitButton: () => void;
 };
 
-const RoomCreator: FC<Prop> = ({
+const RoomEntryForm: FC<Prop> = ({
   userName,
   onUserNameChange,
   password,
   onPasswordChange,
   buttonLabel,
   onClickSubmitButton,
-}) => (
-  <PageFrame>
-    <RoomEntryForm
+}) => {
+  // reference: https://github.com/react-hook-form/react-hook-form/issues/2887
+  /* eslint-disable  @typescript-eslint/unbound-method */
+  const formMethods = useForm();
+
+  return (
+    <RoomTntryFormComponent
       {...{
         userName,
         onUserNameChange,
@@ -28,9 +32,10 @@ const RoomCreator: FC<Prop> = ({
         onPasswordChange,
         buttonLabel,
         onClickSubmitButton,
+        formMethods,
       }}
     />
-  </PageFrame>
-);
+  );
+};
 
-export default RoomCreator;
+export default RoomEntryForm;
