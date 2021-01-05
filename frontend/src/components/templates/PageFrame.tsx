@@ -1,6 +1,6 @@
 import { Container } from '@chakra-ui/react';
 import React, { FC } from 'react';
-import Header from '../organisms/Header';
+import Header from '../../containers/organisms/Header';
 
 const PageFrame: FC = ({ children }) => (
   <>

@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { errorState, loadingState } from '../../states/FetchState';
+import { ErrorState } from '../../states/FetchState';
 import ErrorAlert from '../atoms/ErrorAlert';
 import ProgressBar from '../atoms/ProgressBar';
 
-const Header = () => {
+type Props = {
+  error: ErrorState | undefined;
+  setError: (e: ErrorState | undefined) => void;
+  isLoading: boolean;
+};
+
+const Header: FC<Props> = ({ error, setError, isLoading }) => {
   const [show, setShow] = useState(false);
-  const [error, setError] = useRecoilState(errorState);
-  const isLoading = useRecoilValue(loadingState);
 
   return (
     <>
