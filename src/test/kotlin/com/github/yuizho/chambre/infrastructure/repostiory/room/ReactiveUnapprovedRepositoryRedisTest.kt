@@ -78,6 +78,7 @@ class ReactiveUnapprovedRepositoryRedisTest {
 
         // when
         val actual = reactiveUnapprovedUserRepositoryRedis.findUnapprovedUsers(roomId)
+                .sort(Comparator.comparing<UnapprovedUser, String> { it.name })
 
         // then
         StepVerifier.create(actual)
