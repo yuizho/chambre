@@ -63,7 +63,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "npm run lint:prettier",
+      "npm run lint:fix",
       "git add"
     ]
   },
