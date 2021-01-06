@@ -34,7 +34,9 @@
     "integration-build": "npm run build && mkdir -p ../src/main/resources/public/ && cp -r ./build/* ../src/main/resources/public/",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "npm run lint && npm run lint:prettier",
-    "lint:prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
+    "lint:prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +57,12 @@
     ]
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.1.11",
+    "@storybook/addon-essentials": "^6.1.11",
+    "@storybook/addon-links": "^6.1.11",
+    "@storybook/node-logger": "^6.1.11",
+    "@storybook/preset-create-react-app": "^3.1.5",
+    "@storybook/react": "^6.1.11",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.1.0",
     "husky": "^4.3.6",

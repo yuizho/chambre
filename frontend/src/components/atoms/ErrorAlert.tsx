@@ -7,7 +7,7 @@ import {
 import React, { FC } from 'react';
 import { ErrorState } from '../../states/FetchState';
 
-type Prop = {
+export type Prop = {
   error: ErrorState | undefined;
   onCloseHandler: () => void;
 };

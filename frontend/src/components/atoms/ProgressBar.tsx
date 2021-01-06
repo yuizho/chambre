@@ -1,7 +1,7 @@
 import { Progress } from '@chakra-ui/react';
 import React, { FC } from 'react';
 
-type Prop = {
+export type Prop = {
   isLoading: boolean;
 };
 
