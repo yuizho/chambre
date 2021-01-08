@@ -2,7 +2,7 @@ import { Avatar, Box, Text, Tooltip } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { User } from '../../api/Users';
 
-type Prop = {
+export type Prop = {
   user: User;
   key: string;
   margin: number;
