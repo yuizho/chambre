@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { User } from '../../api/Users';
 import UserItem from '../../containers/melecules/UserItem';
 
-type Prop = {
+export type Prop = {
   users: User[];
 };
 
