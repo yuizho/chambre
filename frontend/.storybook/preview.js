@@ -1,3 +1,4 @@
+import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import { RecoilRoot } from 'recoil';
 
@@ -7,10 +8,12 @@ export const parameters = {
 
 export const decorators = [
   (Story) => (
-    <ChakraProvider>
-      <RecoilRoot>
-        <Story />
-      </RecoilRoot>
-    </ChakraProvider>
+    <BrowserRouter>
+      <ChakraProvider>
+        <RecoilRoot>
+          <Story />
+        </RecoilRoot>
+      </ChakraProvider>
+    </BrowserRouter>
   ),
 ];
