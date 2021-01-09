@@ -1,5 +1,4 @@
 import React from 'react';
-import { ChakraProvider } from '@chakra-ui/react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0';
 import UserItem, { Prop } from './UserItem';
@@ -9,11 +8,7 @@ export default {
   component: UserItem,
 } as Meta;
 
-const Template: Story<Prop> = (args) => (
-  <ChakraProvider>
-    <UserItem {...args} />
-  </ChakraProvider>
-);
+const Template: Story<Prop> = (args) => <UserItem {...args} />;
 
 export const NormalUser = Template.bind({});
 NormalUser.args = {
