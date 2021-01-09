@@ -5,7 +5,7 @@ import { ErrorState } from '../../states/FetchState';
 import ErrorAlert from '../atoms/ErrorAlert';
 import ProgressBar from '../atoms/ProgressBar';
 
-type Props = {
+export type Props = {
   error: ErrorState | undefined;
   setError: (e: ErrorState | undefined) => void;
   isLoading: boolean;
