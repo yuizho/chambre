@@ -10,7 +10,7 @@ jobs:
     # Operating System
     runs-on: ubuntu-latest
     env:
-      working-directory: ./frontend
+      working-directory: './frontend'
     # Job steps
     steps:
       - uses: actions/checkout@v1
