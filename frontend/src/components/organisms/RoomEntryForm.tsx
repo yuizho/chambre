@@ -15,15 +15,11 @@ export type RoomEntryFormData = {
 
 type Prop = {
   buttonLabel: string;
-  onClickSubmitButton: (values: RoomEntryFormData) => void;
+  onSubmit: (values: RoomEntryFormData) => void;
   formMethods: UseFormMethods<RoomEntryFormData>;
 };
 
-const RoomEntryForm: FC<Prop> = ({
-  buttonLabel,
-  onClickSubmitButton,
-  formMethods,
-}) => {
+const RoomEntryForm: FC<Prop> = ({ buttonLabel, onSubmit, formMethods }) => {
   // reference: https://github.com/react-hook-form/react-hook-form/issues/2887
   /* eslint-disable  @typescript-eslint/unbound-method */
   const { handleSubmit, errors, register } = formMethods;
@@ -64,11 +60,7 @@ const RoomEntryForm: FC<Prop> = ({
           <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
         </FormControl>
 
-        <Button
-          mt={3}
-          colorScheme="teal"
-          onClick={handleSubmit(onClickSubmitButton)}
-        >
+        <Button mt={3} colorScheme="teal" onClick={handleSubmit(onSubmit)}>
           {buttonLabel}
         </Button>
       </Container>

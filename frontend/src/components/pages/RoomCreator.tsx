@@ -5,15 +5,15 @@ import PageFrame from '../templates/PageFrame';
 
 type Prop = {
   buttonLabel: string;
-  onClickSubmitButton: (values: RoomEntryFormData) => void;
+  onSubmit: (values: RoomEntryFormData) => void;
 };
 
-const RoomCreator: FC<Prop> = ({ buttonLabel, onClickSubmitButton }) => (
+const RoomCreator: FC<Prop> = ({ buttonLabel, onSubmit }) => (
   <PageFrame>
     <RoomEntryForm
       {...{
         buttonLabel,
-        onClickSubmitButton,
+        onSubmit,
       }}
     />
   </PageFrame>

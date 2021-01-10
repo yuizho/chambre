@@ -17,7 +17,7 @@ const RoomCreator: FC = () => {
 
   const { applied, userId } = useApply({ roomId, ...applyProp });
 
-  const onClickSubmitButton = ({ userName, password }: RoomEntryFormData) =>
+  const onSubmit = ({ userName, password }: RoomEntryFormData) =>
     void setApplyProp({ userName, password });
 
   const buttonLabel = 'apply';
@@ -26,7 +26,7 @@ const RoomCreator: FC = () => {
     <ApplyComponent
       {...{
         buttonLabel,
-        onClickSubmitButton,
+        onSubmit,
         applied,
         roomId,
         userId,

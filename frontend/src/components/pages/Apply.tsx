@@ -6,7 +6,7 @@ import { RoomEntryFormData } from '../organisms/RoomEntryForm';
 
 type Prop = {
   buttonLabel: string;
-  onClickSubmitButton: (values: RoomEntryFormData) => void;
+  onSubmit: (values: RoomEntryFormData) => void;
   applied: boolean;
   roomId: string;
   userId: string;
@@ -14,7 +14,7 @@ type Prop = {
 
 const Apply: FC<Prop> = ({
   buttonLabel,
-  onClickSubmitButton,
+  onSubmit,
   applied,
   roomId,
   userId,
@@ -26,7 +26,7 @@ const Apply: FC<Prop> = ({
       <RoomEntryForm
         {...{
           buttonLabel,
-          onClickSubmitButton,
+          onSubmit,
         }}
       />
     )}

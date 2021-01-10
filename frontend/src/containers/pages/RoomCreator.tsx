@@ -11,7 +11,7 @@ const RoomCreator: FC = () => {
 
   useCreateRoom(createRoomProp);
 
-  const onClickSubmitButton = ({ userName, password }: RoomEntryFormData) =>
+  const onSubmit = ({ userName, password }: RoomEntryFormData) =>
     void setCreateRoomProp({ userName, password });
 
   const buttonLabel = 'create';
@@ -20,7 +20,7 @@ const RoomCreator: FC = () => {
     <RoomCreatorComponent
       {...{
         buttonLabel,
-        onClickSubmitButton,
+        onSubmit,
       }}
     />
   );
