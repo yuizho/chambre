@@ -2,24 +2,17 @@ import React, { FC } from 'react';
 import RoomEntryForm from '../../containers/organisms/RoomEntryForm';
 import PageFrame from '../templates/PageFrame';
 import ApplyEvent from '../../containers/melecules/ApplyEvent';
+import { RoomEntryFormData } from '../organisms/RoomEntryForm';
 
 type Prop = {
-  userName: string;
-  onUserNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  password: string;
-  onPasswordChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   buttonLabel: string;
-  onClickSubmitButton: () => void;
+  onClickSubmitButton: (values: RoomEntryFormData) => void;
   applied: boolean;
   roomId: string;
   userId: string;
 };
 
 const Apply: FC<Prop> = ({
-  userName,
-  onUserNameChange,
-  password,
-  onPasswordChange,
   buttonLabel,
   onClickSubmitButton,
   applied,
@@ -32,10 +25,6 @@ const Apply: FC<Prop> = ({
     ) : (
       <RoomEntryForm
         {...{
-          userName,
-          onUserNameChange,
-          password,
-          onPasswordChange,
           buttonLabel,
           onClickSubmitButton,
         }}

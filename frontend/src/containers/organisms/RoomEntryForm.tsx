@@ -1,35 +1,22 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import RoomTntryFormComponent from '../../components/organisms/RoomEntryForm';
+import RoomTntryFormComponent, {
+  RoomEntryFormData,
+} from '../../components/organisms/RoomEntryForm';
 
 type Prop = {
-  userName: string;
-  onUserNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  password: string;
-  onPasswordChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   buttonLabel: string;
-  onClickSubmitButton: () => void;
+  onClickSubmitButton: (values: RoomEntryFormData) => void;
 };
 
-const RoomEntryForm: FC<Prop> = ({
-  userName,
-  onUserNameChange,
-  password,
-  onPasswordChange,
-  buttonLabel,
-  onClickSubmitButton,
-}) => {
+const RoomEntryForm: FC<Prop> = ({ buttonLabel, onClickSubmitButton }) => {
   // reference: https://github.com/react-hook-form/react-hook-form/issues/2887
   /* eslint-disable  @typescript-eslint/unbound-method */
-  const formMethods = useForm();
+  const formMethods = useForm<RoomEntryFormData>({ mode: 'onBlur' });
 
   return (
     <RoomTntryFormComponent
       {...{
-        userName,
-        onUserNameChange,
-        password,
-        onPasswordChange,
         buttonLabel,
         onClickSubmitButton,
         formMethods,
