@@ -31,12 +31,12 @@ const RoomEntryForm: FC<Prop> = ({ buttonLabel, onSubmit, formMethods }) => {
           <Input
             name="userName"
             mt={3}
-            placeholder="your name"
+            placeholder="あなたのユーザ名"
             ref={register({
-              required: 'user name を入力してください',
+              required: 'ユーザ名を入力してください',
               pattern: {
                 value: /[a-zA-Z0-9]{1,20}/,
-                message: 'user nameは半角英数字20文字以下で入力してください',
+                message: 'ユーザ名は半角英数字20文字以下で入力してください',
               },
             })}
           />
@@ -48,12 +48,12 @@ const RoomEntryForm: FC<Prop> = ({ buttonLabel, onSubmit, formMethods }) => {
             name="password"
             type="password"
             mt={3}
-            placeholder="password (6 digits)"
+            placeholder="roomのパスワード"
             ref={register({
-              required: 'password を入力してください',
+              required: 'roomのパスワードを入力してください',
               pattern: {
                 value: /[a-zA-Z0-9]{6}/,
-                message: 'passwordは半角英数字6文字で入力してください',
+                message: 'roomのパスワードは半角英数字6文字で入力してください',
               },
             })}
           />
