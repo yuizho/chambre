@@ -29,6 +29,7 @@ const useCreateRoom = ({ userName, password }: Props) => {
         void (await fetchAuth(roomCreateResult.authToken));
 
         // store user state
+        localStorage.clear();
         const userStatus = await fetchUserStatus();
         setUserState(userStatus);
 
