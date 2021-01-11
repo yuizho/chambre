@@ -25,6 +25,9 @@ const useApply = ({ roomId, userName, password }: Props) => {
       setLoading(true);
       try {
         const applyResult = await fetchApply(roomId, userName, password);
+
+        // store user state
+        localStorage.clear();
         setUserState({
           id: applyResult.userId,
           name: applyResult.userName,
