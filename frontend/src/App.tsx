@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import {
   MutableSnapshot,
   RecoilRoot,
+  RecoilState,
   useRecoilTransactionObserver_UNSTABLE as useRecoilTransactionObserver,
 } from 'recoil';
 import RoomCreator from './containers/pages/RoomCreator';
@@ -12,17 +13,20 @@ import Apply from './containers/pages/Apply';
 import { userState } from './states/UserState';
 import { eventState } from './states/EventState';
 
+function restoreRecoilState<T>(
+  mutableSnapshot: MutableSnapshot,
+  recoilState: RecoilState<T>,
+) {
+  const item = localStorage.getItem(recoilState.key);
+  if (item) {
+    /* eslint-disable  @typescript-eslint/no-unsafe-member-access */
+    mutableSnapshot.set(recoilState, JSON.parse(item).value);
+  }
+}
+
 const initializeState = (mutableSnapshot: MutableSnapshot) => {
-  const sotredUserSate = localStorage.getItem(userState.key);
-  if (sotredUserSate) {
-    /* eslint-disable  @typescript-eslint/no-unsafe-member-access */
-    mutableSnapshot.set(userState, JSON.parse(sotredUserSate).value);
-  }
-  const storedEventState = localStorage.getItem(eventState.key);
-  if (storedEventState) {
-    /* eslint-disable  @typescript-eslint/no-unsafe-member-access */
-    mutableSnapshot.set(eventState, JSON.parse(storedEventState).value);
-  }
+  restoreRecoilState(mutableSnapshot, userState);
+  restoreRecoilState(mutableSnapshot, eventState);
 };
 
 const PersistenceObserver: FC = () => {
