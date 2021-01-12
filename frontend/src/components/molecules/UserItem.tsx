@@ -4,15 +4,13 @@ import { User } from '../../api/Users';
 
 export type Prop = {
   user: User;
-  key: string;
   margin: number;
   isYou: boolean;
 };
 
-const UserItem: FC<Prop> = ({ user, key, margin, isYou }) => {
+const UserItem: FC<Prop> = ({ user, margin, isYou }) => {
   const userItemBox = (
     <Box
-      key={key}
       d="flex"
       p={2}
       m={margin}

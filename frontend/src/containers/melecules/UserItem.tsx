@@ -6,16 +6,15 @@ import { userState } from '../../states/UserState';
 
 type Prop = {
   user: User;
-  key: string;
   margin: number;
 };
 
-const UserItem: FC<Prop> = ({ user, key, margin }) => {
+const UserItem: FC<Prop> = ({ user, margin }) => {
   const currentUser = useRecoilValue(userState);
 
   return (
     <UserItemComponent
-      {...{ user, key, margin, isYou: user.id === currentUser?.id }}
+      {...{ user, margin, isYou: user.id === currentUser?.id }}
     />
   );
 };

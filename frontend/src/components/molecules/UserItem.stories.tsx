@@ -13,7 +13,6 @@ const Template: Story<Prop> = (args) => <UserItem {...args} />;
 export const NormalUser = Template.bind({});
 NormalUser.args = {
   user: { id: '1', name: 'normal', role: 0 },
-  key: '1',
   margin: 1,
   isYou: false,
 };
@@ -21,7 +20,6 @@ NormalUser.args = {
 export const RoomMaster = Template.bind({});
 RoomMaster.args = {
   user: { id: '1', name: 'room-master', role: 1 },
-  key: '1',
   margin: 1,
   isYou: false,
 };
@@ -29,7 +27,6 @@ RoomMaster.args = {
 export const YourUser = Template.bind({});
 YourUser.args = {
   user: { id: '1', name: 'your-user', role: 0 },
-  key: '1',
   margin: 1,
   isYou: true,
 };
