@@ -11,7 +11,7 @@ const EventList: FC<Props> = ({ events }) => (
     {events
       .filter((event) => !event.isHandled)
       .map((event) => (
-        <EventItem event={event} />
+        <EventItem key={event.eventId} event={event} />
       ))}
   </>
 );
