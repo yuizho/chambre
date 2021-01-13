@@ -5,7 +5,6 @@ const fetchAuth = async (authToken: string): Promise<void> => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded;',
-      // TODO: [csrfHeaderName]: csrfToken
     },
     body: `authToken=${authToken}`,
   }).then((data) => {

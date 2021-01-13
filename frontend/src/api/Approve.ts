@@ -13,7 +13,6 @@ const fetchApprove = async (
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      // TODO: [csrfHeaderName]: csrfToken
     },
     body: JSON.stringify({
       userId,
