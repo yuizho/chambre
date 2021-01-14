@@ -1,10 +1,9 @@
 import React, { FC, useState } from 'react';
+import { RoomEntryFormData } from '../../components/organisms/RoomEntryForm';
 import RoomCreatorComponent from '../../components/pages/RoomCreator';
 import useCreateRoom from '../../hooks/use-create-room';
 
 const RoomCreator: FC = () => {
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
   const [createRoomProp, setCreateRoomProp] = useState({
     userName: '',
     password: '',
@@ -12,11 +11,7 @@ const RoomCreator: FC = () => {
 
   useCreateRoom(createRoomProp);
 
-  const onUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    void setUserName(event.target.value);
-  const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    void setPassword(event.target.value);
-  const onClickSubmitButton = () =>
+  const onSubmit = ({ userName, password }: RoomEntryFormData) =>
     void setCreateRoomProp({ userName, password });
 
   const buttonLabel = 'create';
@@ -24,12 +19,8 @@ const RoomCreator: FC = () => {
   return (
     <RoomCreatorComponent
       {...{
-        userName,
-        onUserNameChange,
-        password,
-        onPasswordChange,
         buttonLabel,
-        onClickSubmitButton,
+        onSubmit,
       }}
     />
   );
