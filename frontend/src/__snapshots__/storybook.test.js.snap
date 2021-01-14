@@ -404,6 +404,55 @@ Array [
 ]
 `;
 
+exports[`Storyshots organisms/RoomEntryForm Default 1`] = `
+<div
+  className="chakra-container css-1luywv2"
+>
+  <div
+    className="chakra-form-control css-1kxonj9"
+    role="group"
+  >
+    <input
+      aria-describedby="field-7-feedback"
+      className="chakra-input css-1mnlaf0"
+      disabled={false}
+      id="field-7"
+      name="userName"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      placeholder="あなたのユーザ名"
+      readOnly={false}
+      required={false}
+    />
+  </div>
+  <div
+    className="chakra-form-control css-1kxonj9"
+    role="group"
+  >
+    <input
+      aria-describedby="field-8-feedback"
+      className="chakra-input css-1mnlaf0"
+      disabled={false}
+      id="field-8"
+      name="password"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      placeholder="roomのパスワード"
+      readOnly={false}
+      required={false}
+      type="password"
+    />
+  </div>
+  <button
+    className="chakra-button css-19nxs7x"
+    onClick={[Function]}
+    type="button"
+  >
+    create
+  </button>
+</div>
+`;
+
 exports[`Storyshots organisms/UserList Blank List 1`] = `
 <div
   className="css-p58oka"
