@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/demo")
 @Controller
 class DemoController {
-    @GetMapping("/gm")
-    fun gm(model: Model): String {
+    @GetMapping("/room-master")
+    fun roomMaster(model: Model): String {
         model.addAttribute(
                 "context",
                 ReactiveSecurityContextHolder.getContext()
                         .map { it.authentication.principal }
         )
-        return "demo/gm"
+        return "demo/room-master"
     }
 
     @GetMapping("/user")

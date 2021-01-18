@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
-class GameMasterService(
+class RoomMasterService(
         private val reactiveRoomRepository: ReactiveRoomRepository,
         private val participantRepository: ReactiveParticipantRepository,
         private val unapprovedUserRepository: ReactiveUnapprovedUserRepository,

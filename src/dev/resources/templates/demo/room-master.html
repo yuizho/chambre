@@ -7,8 +7,8 @@
 <body>
 <h2>create room</h2>
 <div>
-    <label for="gm-name-text">userName: </label>
-    <input type="text" id="gm-name-text" value="gmA">
+    <label for="room-master-name-text">userName: </label>
+    <input type="text" id="room-master-name-text" value="room-masterA">
     <label for="room-name-text">roomName: </label>
     <input type="text" id="room-name-text" value="roomA">
     <label for="room-password-text">pass: </label>
@@ -46,7 +46,7 @@
         const csrfHeaderName = /*[[${_csrf.headerName}]]*/ "";
         const csrfToken = /*[[${_csrf.token}]]*/ "";
         document.querySelector("#create-button").addEventListener('click', () => {
-            const userName = document.getElementById("gm-name-text").value
+            const userName = document.getElementById("room-master-name-text").value
             const roomName = document.getElementById("room-name-text").value
             const password = document.getElementById("room-password-text").value
             fetch("/api/room/create", {
@@ -123,7 +123,7 @@
         document.querySelector("#approve-button").addEventListener('click', () => {
             const userId = document.getElementById("user-id-text").value;
             const userName = document.getElementById("user-name-text").value;
-            fetch("/api/gm/approve", {
+            fetch("/api/room-master/approve", {
                 method: "POST",
                 credentials: 'same-origin',
                 headers: {
@@ -144,7 +144,7 @@
 
         document.querySelector("#reject-button").addEventListener('click', () => {
             const userId = document.getElementById("user-id-text").value;
-            fetch("/api/gm/reject", {
+            fetch("/api/room-master/reject", {
                 method: "POST",
                 credentials: 'same-origin',
                 headers: {

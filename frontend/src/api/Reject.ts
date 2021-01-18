@@ -1,7 +1,7 @@
 import { httpClient } from '../lib/http/HttpClient';
 
 const fetchReject = async (userId: string): Promise<void> =>
-  httpClient<void>('/api/gm/reject', {
+  httpClient<void>('/api/room-master/reject', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',

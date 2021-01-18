@@ -1,7 +1,7 @@
 package com.github.yuizho.chambre.presentation.controller.api
 
 import com.github.yuizho.chambre.application.service.auth.dto.UserSession
-import com.github.yuizho.chambre.application.service.room.GameMasterService
+import com.github.yuizho.chambre.application.service.room.RoomMasterService
 import com.github.yuizho.chambre.domain.room.UnapprovedUser
 import com.github.yuizho.chambre.domain.room.User
 import com.github.yuizho.chambre.exception.BusinessException
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 import javax.validation.Valid
 
-@RequestMapping("/api/gm")
+@RequestMapping("/api/room-master")
 @RestController
-class GameMasterController(
-        private val gameMasterService: GameMasterService
+class RoomMasterController(
+        private val roomMasterService: RoomMasterService
 ) {
     @PostMapping("/approve")
     fun approve(@RequestBody @Valid param: ApproveParamter): Mono<ApproveResponse> {
@@ -33,7 +33,7 @@ class GameMasterController(
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMap { (user, roomId) ->
-                    gameMasterService.approve(user, roomId)
+                    roomMasterService.approve(user, roomId)
                 }
                 .then(Mono.just(ApproveResponse()))
 
@@ -47,7 +47,7 @@ class GameMasterController(
                 }
                 .switchIfEmpty(Mono.error(BusinessException("no session information")))
                 .flatMap { roomId ->
-                    gameMasterService.reject(User.Id(param.userId), roomId)
+                    roomMasterService.reject(User.Id(param.userId), roomId)
                 }
                 .then(Mono.just(RejectResponse()))
     }

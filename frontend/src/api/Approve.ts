@@ -9,7 +9,7 @@ const fetchApprove = async (
   userId: string,
   userName: string,
 ): Promise<ApprovedUser> =>
-  httpClient<ApprovedUser>('/api/gm/approve', {
+  httpClient<ApprovedUser>('/api/room-master/approve', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
